@@ -101,6 +101,25 @@ ajustaLuces(['🔴', '🔴', '🟢', '🔴', '🟢'])
 
 console.log("EJERCICIO 1 - PARTE 6");
 
+let miMapa = new Map()
+miMapa.set("Pasta",["Tomate","Carne","Pasta"])
+miMapa.set("Pizza",["Tomate","Peperoni","masa"])
+miMapa.set("Empanadillas",["Tomate","Peperoni","Hojaldre"])
+
+let miMapa2 = new Map()
+let array
+console.log(miMapa);
+miMapa.forEach((ingredientes,comida)=>{
+    console.log(comida+" "+ingredientes)
+    for(let i in ingredientes){
+        // console.log(ingredientes[i]);
+        array = miMapa.has(ingredientes => ingredientes[i].includes(comida))
+        miMapa2.set(ingredientes[i],array)
+        array = 0
+    }
+});
+console.log(miMapa2);
+
 /**
  * Parte 7
  * Crea una función que pueda recibir tantos números como quieras por parámetro. Utiliza rest para agruparlos en
