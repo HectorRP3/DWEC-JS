@@ -29,8 +29,6 @@ function stringCompression(cadena){
     let contador = 0
     let registroPalabra = ""
     for(let i in cadena){
-        console.log(cadena[i])
-        console.log("letra anterior" +letraAnterior)
         if(letraAnterior === cadena[i]){
             contador++
             letraAnterior = cadena[i]
@@ -72,6 +70,11 @@ encuentraRepetido([1,4,7,3,8,7,4,5,5,1])
  */
 
 console.log("EJERCICIO 1 - PARTE 4");
+function filtraPalabras(array, cadena){
+    let array2 = array.filter((palabra)=> (Array.from(palabra).every((letra)=>cadena.includes(letra))))
+    console.log(array2);
+}
+filtraPalabras(["house", "car", "watch", "table"], "catboulerham")
 
 
 /**
@@ -83,6 +86,12 @@ console.log("EJERCICIO 1 - PARTE 4");
  */
 console.log("EJERCICIO 1 - PARTE 5");
 
+function ajustaLuces(cadena){
+    let cadena2 = cadena.filter((luz,index)=>luz===cadena[index+1])
+    console.log(cadena2.length)
+
+}
+ajustaLuces(['🔴', '🔴', '🟢', '🔴', '🟢'])
 /**
  * Parte 5
  * Crea una colección Map donde la clave es el nombre de un plato y el valor es un array de ingredientes.
