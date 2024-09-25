@@ -158,6 +158,7 @@ desestruturar([2,3,3])
 desestruturar([2,3])
 
 /**
+ * Parte 9
  * Crea una función que tome un número indeterminado de cadenas como argumentos,
  * las agrupa en un array y devuelve un nuevo array que contiene la longitud de cada cadena.
  * No uses bucles.
