@@ -184,3 +184,13 @@ stringLenghts(["potato", "milk", "car", "table"])
  */
 
 console.log("EJERCICIO 1 - PARTE 10");
+
+function arraysinModi(cadena){
+    console.log(cadena);
+    console.log(cadena.toSpliced(0,0,2,2));
+    console.log(cadena.toSpliced(0,2))
+    console.log(cadena.concat([...[2,2,2,2]]))
+    console.log(cadena);
+
+}
+arraysinModi([1,1,1,1,1,1])
