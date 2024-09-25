@@ -116,6 +116,13 @@ miMapa.set("Empanadillas",["Tomate","Peperoni","Hojaldre"])
 
 console.log("EJERCICIO 1 - PARTE 7");
 
+function restGrup(...cadena){
+    console.log(cadena.filter(num => num % 2 == 0));
+    console.log(cadena.filter(num => num % 2 != 0));
+
+}
+
+restGrup(2,3,4,6,7,8,9,10,11,12,13,14)
 
 /**
  * Parte 8
