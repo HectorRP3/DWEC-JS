@@ -106,19 +106,6 @@ miMapa.set("Pasta",["Tomate","Carne","Pasta"])
 miMapa.set("Pizza",["Tomate","Peperoni","masa"])
 miMapa.set("Empanadillas",["Tomate","Peperoni","Hojaldre"])
 
-let miMapa2 = new Map()
-let array
-console.log(miMapa);
-miMapa.forEach((ingredientes,comida)=>{
-    console.log(comida+" "+ingredientes)
-    for(let i in ingredientes){
-        // console.log(ingredientes[i]);
-        array = miMapa.has(ingredientes => ingredientes[i].includes(comida))
-        miMapa2.set(ingredientes[i],array)
-        array = 0
-    }
-});
-console.log(miMapa2);
 
 /**
  * Parte 7
@@ -149,6 +136,13 @@ console.log("EJERCICIO 1 - PARTE 8");
  */
 
 console.log("EJERCICIO 1 - PARTE 9");
+
+function stringLenghts(array){
+    let array2 = array.map(palabra => palabra.length)
+    console.log(array2);
+}
+
+stringLenghts(["potato", "milk", "car", "table"])
 
 
 /**
