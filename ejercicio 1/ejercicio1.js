@@ -93,7 +93,7 @@ function ajustaLuces(cadena){
 }
 ajustaLuces(['🔴', '🔴', '🟢', '🔴', '🟢'])
 /**
- * Parte 5
+ * Parte 6
  * Crea una colección Map donde la clave es el nombre de un plato y el valor es un array de ingredientes.
  * Realiza el código para crear otro Map donde la clave sea el nombre del ingrediente y el valor sea el array de
  * platos donde aparece ese ingrediente.
@@ -134,6 +134,16 @@ restGrup(2,3,4,6,7,8,9,10,11,12,13,14)
 
 console.log("EJERCICIO 1 - PARTE 8");
 
+function desestruturar(cadena){
+
+    let [num1 = 0,num2 = 0,num3 = 0] = cadena
+    let suma = num1 + num2 + num3
+    console.log(suma);
+
+}
+
+desestruturar([2,3,3])
+desestruturar([2,3])
 
 /**
  * Crea una función que tome un número indeterminado de cadenas como argumentos,
