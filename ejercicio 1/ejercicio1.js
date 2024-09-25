@@ -106,7 +106,19 @@ miMapa.set("Pasta",["Tomate","Carne","Pasta"])
 miMapa.set("Pizza",["Tomate","Peperoni","masa"])
 miMapa.set("Empanadillas",["Tomate","Peperoni","Hojaldre"])
 
+let miMapa2 = new Map()
+miMapa.forEach((ingrediente,comida)=>{
+    let arrayingredientes = ingrediente
 
+    arrayingredientes.forEach(x=>{
+        let array =new Array()
+        miMapa.forEach((ingr,comi)=>{
+            if(miMapa.get(comi).includes(x)) array.push(comi)
+        })
+        miMapa2.set(x,array)
+    })
+})
+console.log(miMapa2);
 /**
  * Parte 7
  * Crea una función que pueda recibir tantos números como quieras por parámetro. Utiliza rest para agruparlos en
