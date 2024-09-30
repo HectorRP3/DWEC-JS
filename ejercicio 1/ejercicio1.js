@@ -87,11 +87,21 @@ filtraPalabras(["house", "car", "watch", "table"], "catboulerham")
 console.log("EJERCICIO 1 - PARTE 5");
 
 function ajustaLuces(cadena){
-    let cadena2 = cadena.filter((luz,index)=>luz===cadena[index+1])
-    console.log(cadena2.length)
 
+        let cadena2 = cadena.filter((luz,index)=>luz===cadena[index+1])
+        console.log(cadena2.length)
+    
+    let botonRojo = 0
+    let botonVerde = 0
+    for(let i = 0; i < cadena.length;i++){
+        if(cadena[i]!== (i%2===0 ? '🔴':'🟢'))botonRojo++
+        if(cadena[i]!== (i%2===0 ?'🟢':'🔴'))botonVerde++
+    }
+
+    console.log(Math.min(botonRojo,botonVerde));
+    // comprobar el de delaante segun el caso
 }
-ajustaLuces(['🔴', '🔴', '🟢', '🔴', '🟢'])
+ajustaLuces(['🟢', '🔴', '🟢', '🔴', '🟢', '🔴', '🔴', '🟢', '🔴', '🟢', '🔴' ])
 /**
  * Parte 6
  * Crea una colección Map donde la clave es el nombre de un plato y el valor es un array de ingredientes.
