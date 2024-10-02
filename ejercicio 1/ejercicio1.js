@@ -87,10 +87,6 @@ filtraPalabras(["house", "car", "watch", "table"], "catboulerham")
 console.log("EJERCICIO 1 - PARTE 5");
 
 function ajustaLuces(cadena){
-
-        let cadena2 = cadena.filter((luz,index)=>luz===cadena[index+1])
-        console.log(cadena2.length)
-    
     let botonRojo = 0
     let botonVerde = 0
     for(let i = 0; i < cadena.length;i++){
