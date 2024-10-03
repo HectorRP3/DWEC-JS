@@ -19,23 +19,59 @@
  * El elemento button#clear borrará todo dentro de div.container.
  * 
  * NO USES innerHTML!!!!
- * "insert-before">Insert before</button>
-    <button id="insert-after">Insert after</button>
-    <button id="replace">Replace</button>
-    <button id="delete">Delete selected</button>
-    <button id="clear"
  */
-let container = document.querySelectorAll('.container > div');
-container.forEach(anyadirClases())
+let cont = document.querySelector('.container')
+let container = document.querySelectorAll('.container > div')
+let cont2 = cont.childrens
+let insertar = document.getElementById("insert-after")
+let insertarAntes = document.getElementById("insert-before")
+let replace = document.getElementById("replace")
+let borrar = document.getElementById("delete")
+let clear = document.getElementById("clear")
+let inputText = document.getElementById("text")
 
-let insertar = document.querySelector("insert-after")
-let replace = document.querySelector("replace")
-let borrar = document.querySelector("delete")
-let clear = document.querySelector("clear")
+
+insertar.addEventListener('click',(x)=>{
+    let div = document.createElement("div")
+    div.textContent = inputText.value
+    x = document.querySelector(".selected")
+    if(x){x.after(div)
+    }else{cont.prepend(div)}
+    container.forEach(anyadirClases)
+})
+insertarAntes.addEventListener('click',(x)=>{
+    let div = document.createElement("div")
+    div.textContent = inputText.value
+    x = document.querySelector(".selected")
+    if(x){x.before(div)
+    }else{cont.prepend(div)}
+    container.forEach(anyadirClases)
+})
+
+replace.addEventListener('click',(x)=>{
+    x = document.querySelector(".selected")
+    if(x){
+        let div = document.createElement("div")
+        div.textContent += inputText.value
+        cont.replaceChild(div,x)
+    }
+    container.forEach(anyadirClases)
+})
 
 
 
+clear.addEventListener('click', ()=>{
+    cont.replaceChildren()
+})
+
+borrar.addEventListener('click',(x)=>{
+    x = document.querySelector(".selected");
+    if(x){x.classList.remove("selected")}
+})
+
+container.forEach(anyadirClases)
 function anyadirClases(){
+    container = document.querySelectorAll('.container > div')
     container.forEach(x=>{
         x.addEventListener('click',()=>{
             container.forEach(x=>{x.classList.remove("selected")})
