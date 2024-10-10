@@ -8,9 +8,13 @@
 
 let container = document.querySelectorAll('.container > div');
 
+// let contain = document.querySelector(".container")
+
+// let elemento = contain.children
+
 container.forEach(x=>{
     x.addEventListener('click',()=>{
-        x.classList.add("selected")
+        x.classList.toggle("selected")
     })
 })
 

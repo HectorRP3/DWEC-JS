@@ -31,52 +31,59 @@ let clear = document.getElementById("clear")
 let inputText = document.getElementById("text")
 
 
-insertar.addEventListener('click',(x)=>{
+function creatDiv(texto){
     let div = document.createElement("div")
-    div.textContent = inputText.value
+    div.textContent = texto
+    return div
+}
+insertar.addEventListener('click',(x)=>{
+    const div =creatDiv(inputText.value)
     x = document.querySelector(".selected")
     if(x){x.after(div)
     }else{cont.prepend(div)}
     container.forEach(anyadirClases)
 })
 insertarAntes.addEventListener('click',(x)=>{
-    let div = document.createElement("div")
-    div.textContent = inputText.value
+    const div =creatDiv(inputText.value)
     x = document.querySelector(".selected")
     if(x){x.before(div)
     }else{cont.prepend(div)}
     container.forEach(anyadirClases)
 })
 
-replace.addEventListener('click',(x)=>{
-    x = document.querySelector(".selected")
-    if(x){
-        let div = document.createElement("div")
-        div.textContent += inputText.value
-        cont.replaceChild(div,x)
-    }
+replace.addEventListener('click',(e)=>{
+    document.querySelector(".selected")?.replaceWith(creatDiv(inputText.value))
     container.forEach(anyadirClases)
 })
-
-
 
 clear.addEventListener('click', ()=>{
     cont.replaceChildren()
 })
 
 borrar.addEventListener('click',(x)=>{
-    x = document.querySelector(".selected");
-    if(x){x.classList.remove("selected")}
+    document.querySelector(".selected")?.remove();
 })
 
-container.forEach(anyadirClases)
+container.forEach(x=>{
+    x.addEventListener('click',divClick)
+})
+
 function anyadirClases(){
     container = document.querySelectorAll('.container > div')
+    //const selected = document.querySelector(".selected")
     container.forEach(x=>{
         x.addEventListener('click',()=>{
             container.forEach(x=>{x.classList.remove("selected")})
             x.classList.add("selected")
         })
     })
+}
+
+function divClick(e){
+    const selected = document.querySelector(".selected")
+    if(selected && selected !== this){
+        selected.classList.remove("selected")
+    }
+    this.classList.toggle("selected")
 }
 
