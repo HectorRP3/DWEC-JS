@@ -28,40 +28,48 @@ newProdForm.addEventListener('submit',(e) =>{
     const phone = newProdForm.elements.namedItem("phone")
     const img = valorImage
     //create div 1
-    let div = document.createElement("div")
-    div.classList.add("col")
+    // let div = document.createElement("div")
+    // div.classList.add("col")
     //create div 2
-    let div2 = document.createElement("div")
-    div2.classList.add("card", "h-100", "shadow")
-    div.append(div2)
+    // let div2 = document.createElement("div")
+    // div2.classList.add("card", "h-100", "shadow")
+    // div.append(div2)
     // obtain image
-    let image = obtainImage(img)
+    // let image = obtainImage(img)
     //append image to div2
-    div2.append(image)
+    // div2.append(image)
     //create elemet div 3
-    let div3 = document.createElement("div")
-    div3.classList.add("card-body")
+    // let div3 = document.createElement("div")
+    // div3.classList.add("card-body")
     //append div3 to div2
-    div2.append(div3)
-    // create elemet h4
-    let h4 = obtainH4(name)
+    // div2.append(div3)
+    //create elemet h4
+    // let h4 = obtainH4(name)
     //append h4 to div3
-    div3.append(h4)
+    // div3.append(h4)
 
     // appent to container
+    //container.append(div)
+
+    const userHTML = userTemplate.content.cloneNode(true);
+    const div  = userHTML.firstElementChild;
+    div.querySelector("img").src = valorImage;
+    div.querySelector("h4").textContent = name.value;
+    div.querySelector("p").textContent = description.value;
     container.append(div)
+
 })
 //create element image
-function obtainImage(img){
-    let image =  document.createElement("img")
-    image.classList.add("card-img-top")
-    image.src = img
-    return image
-}
-//create element h4
-function obtainH4(name){
-    let nombre = document.createElement("h4")
-    nombre.classList.add("card-title")
-    nombre.textContent=name.value
-    return nombre
-}
+// function obtainImage(img){
+//     let image =  document.createElement("img")
+//     image.classList.add("card-img-top")
+//     image.src = img
+//     return image
+// }
+// create element h4
+// function obtainH4(name){
+//     let nombre = document.createElement("h4")
+//     nombre.classList.add("card-title")
+//     nombre.textContent=name.value
+//     return nombre
+// }
