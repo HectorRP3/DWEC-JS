@@ -1,23 +1,36 @@
 "use strict";
 
+import { GeocoderAutocomplete } from "@geoapify/geocoder-autocomplete";
 import { RestaurantService } from "./classes/restaurant-service";
+import { Point } from "ol/geom";
+import { RestaurantInsert } from "./interfaces/restaurant";
+import { MyGeolocation } from "./classes/my-geolocation";
+import { MapService } from "./classes/map-service";
+import { useGeographic } from "ol/proj";
 
-let newPlaceForm = document.getElementById("newRestaurant") as HTMLFormElement;
-let imgPreview = document.getElementById("imgPreview") as HTMLImageElement;
+const newPlaceForm = document.getElementById(
+    "newRestaurant"
+) as HTMLFormElement;
+const imgPreview = document.getElementById("imgPreview") as HTMLImageElement;
 
 newPlaceForm.image.addEventListener("change", loadImage);
 newPlaceForm.addEventListener("submit", validateForm);
-let restaurantService = new RestaurantService();
+const restaurantService = new RestaurantService();
+let lat: number;
+let lng: number;
 
 function testInputExpr(input: HTMLInputElement, expr: RegExp) {
     input.classList.remove("is-valid", "is-invalid");
-    let valid = expr.test(input.value);
+    const valid = expr.test(input.value);
     input.classList.add(valid ? "is-valid" : "is-invalid");
     return valid;
 }
 
 function validatePhone() {
-    return testInputExpr(newPlaceForm.phone, /^[0-9]{9}$/);
+    return testInputExpr(
+        newPlaceForm.elements.namedItem("phone") as HTMLInputElement,
+        /^[0-9]{9}$/
+    );
 }
 
 function validateName() {
@@ -28,15 +41,21 @@ function validateName() {
 }
 
 function validateDescription() {
-    return testInputExpr(newPlaceForm.description, /\S/);
+    return testInputExpr(
+        newPlaceForm.elements.namedItem("description") as HTMLInputElement,
+        /\S/
+    );
 }
 
 function validateCuisine() {
-    return testInputExpr(newPlaceForm.cuisine, /\S/);
+    return testInputExpr(
+        newPlaceForm.elements.namedItem("cuisine") as HTMLInputElement,
+        /\S/
+    );
 }
 
 function validateDays(daysArray: number[]) {
-    let daysError = document.getElementById("daysError") as HTMLElement;
+    const daysError = document.getElementById("daysError") as HTMLElement;
     if (!daysArray.length) daysError.classList.remove("d-none");
     else daysError.classList.add("d-none");
     return daysArray.length > 0;
@@ -44,7 +63,7 @@ function validateDays(daysArray: number[]) {
 
 function validateImage() {
     let validate = false;
-    let imgInput = document.getElementById("image") as HTMLInputElement;
+    const imgInput = document.getElementById("image") as HTMLInputElement;
     imgInput.classList.remove("is-valid", "is-invalid");
     if (imgInput.files!.length > 0) {
         imgInput.classList.add("is-valid");
@@ -57,17 +76,18 @@ function validateImage() {
 
 async function validateForm(event: Event) {
     event.preventDefault();
-    let name = (newPlaceForm.elements.namedItem("name") as HTMLInputElement)
+    const name = (newPlaceForm.elements.namedItem("name") as HTMLInputElement)
         .value;
-    let image = imgPreview.src;
-    let cuisine = newPlaceForm.cuisine.value;
-    let description = newPlaceForm.description.value;
-    let phone = newPlaceForm.phone.value;
-    let daysOpen = Array.from(newPlaceForm.days as HTMLInputElement[])
+    const image = imgPreview.src;
+    const cuisine = newPlaceForm.cuisine.value as string;
+    const description = newPlaceForm.description.value as string;
+    const phone = newPlaceForm.phone.value as string;
+    const daysOpen = Array.from(newPlaceForm.days as HTMLInputElement[])
         .filter((dc) => dc.checked)
         .map((dc) => +dc.value);
-
-    let validations = [
+    const dayOpenString = daysOpen.map((d) => d.toString());
+    const address = document.querySelector("input")!.value
+    const validations = [
         validateName(),
         validateDescription(),
         validateCuisine(),
@@ -78,13 +98,16 @@ async function validateForm(event: Event) {
 
     if (validations.every((v) => v === true)) {
         //check all validations
-        let rest = createRestJson(
+        const rest = createRestJson(
             name,
             image,
             cuisine,
             description,
             phone,
-            daysOpen
+            dayOpenString,
+            address,
+            lat,
+            lng
         );
         await restaurantService.post(rest);
 
@@ -106,8 +129,11 @@ function createRestJson(
     cuisine: string,
     description: string,
     phone: string,
-    daysOpen: number[]
-) {
+    daysOpen: string[],
+    address: string,
+    lat: number,
+    lng: number
+): RestaurantInsert {
     const rest = {
         name: name,
         image: image,
@@ -115,12 +141,15 @@ function createRestJson(
         cuisine: cuisine,
         phone: phone,
         daysOpen: daysOpen,
+        address: address,
+        lat: lat,
+        lng: lng,
     };
     return rest;
 }
 
 function loadImage() {
-    let file = (newPlaceForm.image as HTMLInputElement).files![0];
+    const file = (newPlaceForm.image as HTMLInputElement).files![0];
     if (!file) return;
     const fileReader = new FileReader();
     fileReader.readAsDataURL(file);
@@ -129,3 +158,26 @@ function loadImage() {
         imgPreview.src = fileReader.result as string;
     });
 }
+useGeographic();
+
+async function showMap() {
+    const coords = await MyGeolocation.getLocation();
+
+    const mapService = new MapService(coords, "map");
+    const marker = mapService.createMarker(coords);
+
+    const autocomplete = new GeocoderAutocomplete(
+        document.getElementById("autocomplete")!,
+        "0e06ec1237024679917ce4cd898d1a99",
+        { lang: "es", debounceDelay: 600 }
+    );
+
+    autocomplete.on("select", (location) => {
+        marker.setGeometry(new Point(location.geometry.coordinates as [number,number]));
+        mapService.view.setCenter(location.geometry.coordinates as [number,number]);
+        lat = location.geometry.coordinates[1];
+        lng = location.geometry.coordinates[0];
+    });
+}
+
+showMap();

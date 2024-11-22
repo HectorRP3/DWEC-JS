@@ -2,6 +2,7 @@ import { RestaurantService } from "./classes/restaurant-service";
 import { Restaurant } from "./interfaces/restaurant";
 
 let restaurants: Restaurant[] = [];
+const buttonLoad = document.getElementById("loadMore") as HTMLButtonElement;
 const restaurantService = new RestaurantService();
 const placesContainer = document.getElementById(
     "placesContainer"
@@ -10,6 +11,28 @@ const restTemplate = document.getElementById(
     "restaurantTemplate"
 ) as HTMLTemplateElement;
 const WEEKDAYS: string[] = ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"];
+let page = 1;
+const buttonSearch = document.getElementById("searchBtn") as HTMLButtonElement;
+const inputSearch = document.getElementById("searchInput") as HTMLInputElement;
+
+buttonSearch.addEventListener("click", async () => {
+    const resp = await restaurantService.getRestaurantSearch(inputSearch.value);
+    restaurants = resp;
+    showRestaurants(restaurants);
+});
+buttonLoad.addEventListener("click", getrestaurants2);
+
+async function getrestaurants2() {
+    const more = await restaurantService.getMore(page);
+    if (more) {
+        page++;
+        const res = await restaurantService.getNextRestaurants(page);
+        restaurants = [...restaurants, ...res];
+        showRestaurants(restaurants);
+    } else {
+        buttonLoad.classList.add("d-none");
+    }
+}
 
 async function getrestaurants() {
     restaurants = await restaurantService.getAll();
@@ -23,8 +46,8 @@ function showRestaurants(restaurants: Restaurant[]) {
 }
 
 function restaurant2HTML(restaurant: Restaurant) {
-    let clone = restTemplate.content.cloneNode(true) as DocumentFragment;
-    let col = clone.children[0];
+    const clone = restTemplate.content.cloneNode(true) as DocumentFragment;
+    const col = clone.children[0];
     col.querySelector<HTMLImageElement>(".card-img-top")!.src =
         restaurant.image;
     col.querySelector<HTMLInputElement>(".card-title")!.textContent =
@@ -42,10 +65,15 @@ function restaurant2HTML(restaurant: Restaurant) {
     col.querySelector<HTMLInputElement>(".phone")!.append(restaurant.phone);
     col.querySelector<HTMLInputElement>(".card-footer small")!.textContent =
         restaurant.cuisine;
+    col.querySelector<HTMLInputElement>(".distance")?.prepend(restaurant.distance.toString());
+
+    col.querySelector<HTMLButtonElement>("button.delete")?.classList.add(
+        "d-none"
+    );
     col.querySelector<HTMLButtonElement>("button.delete")?.addEventListener(
         "click",
         async () => {
-            let del = confirm("¿Seguro que quieres borrar el restaurante?");
+            const del = confirm("¿Seguro que quieres borrar el restaurante?");
             if (del) {
                 try {
                     await restaurantService.delete(restaurant.id);
@@ -60,6 +88,11 @@ function restaurant2HTML(restaurant: Restaurant) {
             }
         }
     );
+    if (restaurant.mine) {
+        col.querySelector<HTMLButtonElement>("button.delete")?.classList.remove(
+            "d-none"
+        );
+    }
     return col;
 }
 
