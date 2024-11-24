@@ -1,8 +1,8 @@
-import { UserService } from "./classes/user-service";
+import { AuthService } from "./classes/auth-service";
 import { Coordinates } from "./interfaces/coordinates";
 import { UserLogin } from "./interfaces/user";
 
-const userService = new UserService();
+const authService = new AuthService();
 const form = document.getElementById("form-login") as HTMLFormElement;
 let lat: number;
 let lng: number;
@@ -15,21 +15,25 @@ async function submitLogin(event: Event) {
     chargeLocation();
     const rest = createResJson(email, password, lat, lng);
 
-    const token = await userService.postLogin(rest);
+    const token = await authService.postLogin(rest);
 
     localStorage.setItem("token", token.accessToken);
-    
+
     location.assign("./index.html");
 }
-  
 
-function createResJson(email:string,password:string,lat:number,lng:number) :UserLogin{
+function createResJson(
+    email: string,
+    password: string,
+    lat: number,
+    lng: number
+): UserLogin {
     const rest = {
-        email:email,
-        password:password,
-        lat:lat,
-        lng:lng,
-    }
+        email: email,
+        password: password,
+        lat: lat,
+        lng: lng,
+    };
     return rest;
 }
 

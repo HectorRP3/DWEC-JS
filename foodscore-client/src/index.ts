@@ -32,6 +32,7 @@ async function getrestaurants2() {
     } else {
         buttonLoad.classList.add("d-none");
     }
+    getrestaurants2();
 }
 
 async function getrestaurants() {
@@ -65,7 +66,9 @@ function restaurant2HTML(restaurant: Restaurant) {
     col.querySelector<HTMLInputElement>(".phone")!.append(restaurant.phone);
     col.querySelector<HTMLInputElement>(".card-footer small")!.textContent =
         restaurant.cuisine;
-    col.querySelector<HTMLInputElement>(".distance")?.prepend(restaurant.distance.toString());
+    col.querySelector<HTMLInputElement>(".distance")?.prepend(
+        restaurant.distance.toString()
+    );
 
     col.querySelector<HTMLButtonElement>("button.delete")?.classList.add(
         "d-none"
