@@ -1,3 +1,4 @@
+import Swal from "sweetalert2";
 import { AuthService } from "./classes/auth-service";
 import { Coordinates } from "./interfaces/coordinates";
 import { UserLogin } from "./interfaces/user";
@@ -15,11 +16,20 @@ async function submitLogin(event: Event) {
     chargeLocation();
     const rest = createResJson(email, password, lat, lng);
 
-    const token = await authService.postLogin(rest);
+   await authService.postLogin(rest).then((res) => {
+        localStorage.setItem("token", res.accessToken);
+        location.assign("./index.html");
+    }).catch(() => {
+        Swal.fire({
+            title: "Error",
+            text: "Usuario o contraseña incorrectos",
+            icon: "error",
+            });
+        return null;
+    });
 
-    localStorage.setItem("token", token.accessToken);
 
-    location.assign("./index.html");
+   
 }
 
 function createResJson(

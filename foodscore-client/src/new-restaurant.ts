@@ -7,6 +7,7 @@ import { RestaurantInsert } from "./interfaces/restaurant";
 import { MyGeolocation } from "./classes/my-geolocation";
 import { MapService } from "./classes/map-service";
 import { useGeographic } from "ol/proj";
+import Swal from "sweetalert2";
 
 const newPlaceForm = document.getElementById(
     "newRestaurant"
@@ -109,18 +110,25 @@ async function validateForm(event: Event) {
             lat,
             lng
         );
-        await restaurantService.post(rest);
-
-        newPlaceForm.reset();
-        imgPreview.classList.add("d-none");
-
-        document
-            .querySelectorAll(".form-control")
-            .forEach((input) =>
-                input.classList.remove("is-valid", "is-invalid")
-            );
-        document.getElementById("daysError")!.classList.add("d-none");
-        location.assign("./index.html");
+        await restaurantService.post(rest).then(() => {
+            newPlaceForm.reset();
+            imgPreview.classList.add("d-none");
+    
+            document
+                .querySelectorAll(".form-control")
+                .forEach((input) =>
+                    input.classList.remove("is-valid", "is-invalid")
+                );
+            document.getElementById("daysError")!.classList.add("d-none");
+            location.assign("./index.html");
+        }).catch(() => {
+            Swal.fire({
+                title: "Error",
+                text: "Formulario incorrecto faltan datos",
+                icon: "error",
+                });
+            return null;
+        });
     }
 }
 function createRestJson(

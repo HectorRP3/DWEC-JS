@@ -1,8 +1,9 @@
-import { UserService } from "./classes/user-service";
+import { AuthService } from "./classes/auth-service";
 import { Coordinates } from "./interfaces/coordinates";
 import { User } from "./interfaces/user";
 
-const userService = new UserService()
+
+const authServices = new AuthService();
 const form = document.getElementById("form-register") as HTMLFormElement;
 const imgPreview = document.getElementById("imgPreview") as HTMLImageElement;
 
@@ -58,7 +59,7 @@ async function submitForm(event: Event) {
 
     const rest = createRestJson(name, email, password, lat, lng, avatar);
 
-    const responses = await userService.postRegister(rest);
+    const responses = await authServices.postRegister(rest);
 
     if(!responses){
         form.reset();

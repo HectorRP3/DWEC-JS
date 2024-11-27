@@ -1,9 +1,12 @@
+import Swal from "sweetalert2";
 import { RestaurantService } from "./classes/restaurant-service";
 import { Restaurant } from "./interfaces/restaurant";
+import { UserService } from "./classes/user-service";
 
 let restaurants: Restaurant[] = [];
 const buttonLoad = document.getElementById("loadMore") as HTMLButtonElement;
 const restaurantService = new RestaurantService();
+const userService = new UserService();
 const placesContainer = document.getElementById(
     "placesContainer"
 ) as HTMLDivElement;
@@ -14,13 +17,72 @@ const WEEKDAYS: string[] = ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"];
 let page = 1;
 const buttonSearch = document.getElementById("searchBtn") as HTMLButtonElement;
 const inputSearch = document.getElementById("searchInput") as HTMLInputElement;
+const filterInfo = document.getElementById("filterInfo") as HTMLDivElement;
 
-buttonSearch.addEventListener("click", async () => {
-    const resp = await restaurantService.getRestaurantSearch(inputSearch.value);
+
+const creator = new URLSearchParams(window.location.search).get("creator");
+if (creator == null) {
+    getrestaurants();
+    buttonSearch.addEventListener("click", async () => {
+        page = 1;
+        const resp = await restaurantService.getRestaurantSearch(
+            inputSearch.value,
+            page
+        );
+        restaurants = resp;
+        filterInfo.append(`Filtrando por: ${inputSearch.value}`);
+        showRestaurants(restaurants);
+        const more = await restaurantService.getMore(page);
+        if (more) {
+            buttonLoad.classList.add("d-none");
+        }
+    });
+    buttonLoad.addEventListener("click", getrestaurants2);
+} else {
+    page = 1;
+    getRestaurantByCreator();
+    const information = await userService.getInformationUser(+creator!);
+    filterInfo.prepend("Creator: " + information.name + " ");
+    const more = await restaurantService.getRestaurantByCreatorMore(
+        +creator,
+        page
+    );
+    if (!more) {
+        buttonLoad.classList.add("d-none");
+    }
+    buttonSearch.addEventListener("click", async () => {
+        page = 1;
+        const resp = await restaurantService.getRestaurantByCreatorSearch(
+            +creator,
+            page,
+            inputSearch.value,
+        );
+        restaurants = resp;
+        filterInfo.append(`Filtrando por: ${inputSearch.value}`);
+        showRestaurants(restaurants);
+        const more = await restaurantService.getRestaurantByCreatorMore(
+            +creator,
+            page
+        );
+        if (!more) {
+            buttonLoad.classList.add("d-none");
+        }
+    });
+    buttonLoad.addEventListener("click", getRestaurantByCreatorSearch);
+}
+
+async function getRestaurantByCreatorSearch(){
+    const resp = await restaurantService.getRestaurantByCreatorSearch(+creator!,page,inputSearch.value);
     restaurants = resp;
     showRestaurants(restaurants);
-});
-buttonLoad.addEventListener("click", getrestaurants2);
+}
+async function getRestaurantByCreator() {
+    const resp = await restaurantService.getRestaurantByCreator(+creator!);
+    restaurants = resp;
+    showRestaurants(restaurants);
+}
+
+
 
 async function getrestaurants2() {
     const more = await restaurantService.getMore(page);
@@ -49,6 +111,8 @@ function showRestaurants(restaurants: Restaurant[]) {
 function restaurant2HTML(restaurant: Restaurant) {
     const clone = restTemplate.content.cloneNode(true) as DocumentFragment;
     const col = clone.children[0];
+    col.querySelector<HTMLAnchorElement>("div.shadow > a")!.href =
+        "/restaurant-detail.html?id=" + restaurant.id;
     col.querySelector<HTMLImageElement>(".card-img-top")!.src =
         restaurant.image;
     col.querySelector<HTMLInputElement>(".card-title")!.textContent =
@@ -67,7 +131,7 @@ function restaurant2HTML(restaurant: Restaurant) {
     col.querySelector<HTMLInputElement>(".card-footer small")!.textContent =
         restaurant.cuisine;
     col.querySelector<HTMLInputElement>(".distance")?.prepend(
-        restaurant.distance.toString()
+        restaurant.distance.toFixed(2).toString()
     );
 
     col.querySelector<HTMLButtonElement>("button.delete")?.classList.add(
@@ -75,20 +139,27 @@ function restaurant2HTML(restaurant: Restaurant) {
     );
     col.querySelector<HTMLButtonElement>("button.delete")?.addEventListener(
         "click",
-        async () => {
-            const del = confirm("¿Seguro que quieres borrar el restaurante?");
-            if (del) {
-                try {
-                    await restaurantService.delete(restaurant.id);
-                    restaurants = restaurants.filter(
-                        (r) => r.id !== restaurant.id
-                    );
-                    col.remove();
-                } catch (e) {
-                    alert("¡Error borrando restaurante!");
-                    console.error(e);
+        () => {
+            Swal.fire({
+                title: "¿Estás seguro?",
+                text: "No podrás recuperar el restaurante",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Sí",
+                cancelButtonText: "Cancelar",
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        await restaurantService.delete(restaurant.id);
+                        restaurants = restaurants.filter(
+                            (r) => r.id !== restaurant.id
+                        );
+                        col.remove();
+                    } catch (e) {
+                        console.error(e);
+                    }
                 }
-            }
+            });
         }
     );
     if (restaurant.mine) {
@@ -98,6 +169,3 @@ function restaurant2HTML(restaurant: Restaurant) {
     }
     return col;
 }
-
-// Main
-getrestaurants();
