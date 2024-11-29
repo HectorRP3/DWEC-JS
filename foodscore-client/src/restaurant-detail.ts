@@ -25,7 +25,11 @@ const startValue = document.querySelectorAll<HTMLInputElement>("#stars i");
 const restaruranService = new RestaurantService();
 const stars = document.getElementById("stars") as HTMLInputElement;
 const cardPulse = document.querySelector<HTMLDivElement>("#creatorCard > .card-body") as HTMLDivElement;
-
+const logOut = document.getElementById("logout") as HTMLButtonElement;
+logOut.addEventListener("click", () => {
+    localStorage.removeItem("token");
+    location.assign("./login.html");
+});
 let lat: number;
 let lng: number;
 

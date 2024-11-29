@@ -27,6 +27,11 @@ const buttonEditPhoto = document.getElementById(
     "photoInput"
 ) as HTMLInputElement;
 
+const logOut = document.getElementById("logout") as HTMLButtonElement;
+logOut.addEventListener("click", () => {
+    localStorage.removeItem("token");
+    location.assign("./login.html");
+});
 let lat: number;
 let lng: number;
 const id = new URLSearchParams(window.location.search).get("id")

@@ -9,6 +9,11 @@ import { MapService } from "./classes/map-service";
 import { useGeographic } from "ol/proj";
 import Swal from "sweetalert2";
 
+const logOut = document.getElementById("logout") as HTMLButtonElement;
+logOut.addEventListener("click", () => {
+    localStorage.removeItem("token");
+    location.assign("./login.html");
+});
 const newPlaceForm = document.getElementById(
     "newRestaurant"
 ) as HTMLFormElement;
@@ -87,7 +92,7 @@ async function validateForm(event: Event) {
         .filter((dc) => dc.checked)
         .map((dc) => +dc.value);
     const dayOpenString = daysOpen.map((d) => d.toString());
-    const address = document.querySelector("input")!.value
+    const address = document.querySelector("input")!.value;
     const validations = [
         validateName(),
         validateDescription(),
@@ -110,25 +115,28 @@ async function validateForm(event: Event) {
             lat,
             lng
         );
-        await restaurantService.post(rest).then(() => {
-            newPlaceForm.reset();
-            imgPreview.classList.add("d-none");
-    
-            document
-                .querySelectorAll(".form-control")
-                .forEach((input) =>
-                    input.classList.remove("is-valid", "is-invalid")
-                );
-            document.getElementById("daysError")!.classList.add("d-none");
-            location.assign("./index.html");
-        }).catch(() => {
-            Swal.fire({
-                title: "Error",
-                text: "Formulario incorrecto faltan datos",
-                icon: "error",
+        await restaurantService
+            .post(rest)
+            .then(() => {
+                newPlaceForm.reset();
+                imgPreview.classList.add("d-none");
+
+                document
+                    .querySelectorAll(".form-control")
+                    .forEach((input) =>
+                        input.classList.remove("is-valid", "is-invalid")
+                    );
+                document.getElementById("daysError")!.classList.add("d-none");
+                location.assign("./index.html");
+            })
+            .catch(() => {
+                Swal.fire({
+                    title: "Error",
+                    text: "Formulario incorrecto faltan datos",
+                    icon: "error",
                 });
-            return null;
-        });
+                return null;
+            });
     }
 }
 function createRestJson(
@@ -181,8 +189,12 @@ async function showMap() {
     );
 
     autocomplete.on("select", (location) => {
-        marker.setGeometry(new Point(location.geometry.coordinates as [number,number]));
-        mapService.view.setCenter(location.geometry.coordinates as [number,number]);
+        marker.setGeometry(
+            new Point(location.geometry.coordinates as [number, number])
+        );
+        mapService.view.setCenter(
+            location.geometry.coordinates as [number, number]
+        );
         lat = location.geometry.coordinates[1];
         lng = location.geometry.coordinates[0];
     });

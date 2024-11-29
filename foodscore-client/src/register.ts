@@ -1,7 +1,7 @@
+import Swal from "sweetalert2";
 import { AuthService } from "./classes/auth-service";
 import { Coordinates } from "./interfaces/coordinates";
 import { User } from "./interfaces/user";
-
 
 const authServices = new AuthService();
 const form = document.getElementById("form-register") as HTMLFormElement;
@@ -59,16 +59,20 @@ async function submitForm(event: Event) {
 
     const rest = createRestJson(name, email, password, lat, lng, avatar);
 
-    const responses = await authServices.postRegister(rest);
-
-    if(!responses){
-        form.reset();
-        imgPreview.classList.add("d-none");
-        confirm("Metido");
-        location.assign("./login.html");
-    }else{
-        alert("Error al insertar el usuario")
-    } 
+    await authServices
+        .postRegister(rest)
+        .then(() => {
+            form.reset();
+            imgPreview.classList.add("d-none");
+            location.assign("./login.html");
+        })
+        .catch(() => {
+            Swal.fire({
+                title: "Error",
+                text: "Faltan datos del usuario",
+                icon: "error",
+        });
+    });
 }
 function createRestJson(
     name: string,

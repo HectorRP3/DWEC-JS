@@ -28,16 +28,30 @@ export class RestaurantService {
         >(SERVER + "/restaurants", restaurants);
         return resp.restaurant;
     }
-    async getMore(page:number): Promise<boolean> {
-        const resp = await this.#http.get<RestaurantsResponse>(
-            SERVER + "/restaurants?page="+page
-        );
+    async getMore(page:number,creator?:number): Promise<boolean> {
+        let resp = null;
+        if(creator == null){
+            resp = await this.#http.get<RestaurantsResponse>(
+                SERVER + "/restaurants?page="+page
+            );
+        }else{
+            resp = await this.#http.get<RestaurantsResponse>(
+                SERVER + "/restaurants?page="+page+"&creator="+creator
+            );
+        }
         return resp.more;
     }
-    async getNextRestaurants(page:number): Promise<Restaurant[]> {
-        const resp = await this.#http.get<RestaurantsResponse>(
-            SERVER + "/restaurants?page="+page
-        );
+    async getNextRestaurants(page:number,creator?:number): Promise<Restaurant[]> {
+        let resp = null
+        if(creator == null){
+            resp = await this.#http.get<RestaurantsResponse>(
+                SERVER + "/restaurants?page="+page
+            );
+        }else{
+            resp = await this.#http.get<RestaurantsResponse>(
+                SERVER + "/restaurants?page="+page+"&creator="+creator
+            );
+        }
         return resp.restaurants;
     }
     async getRestaurantId(id: number): Promise<Restaurant> {
@@ -47,8 +61,13 @@ export class RestaurantService {
         return resp.restaurant;
     }
 
-    async getRestaurantSearch(search:string,page:number) : Promise<Restaurant[]>{
-        const resp = await this.#http.get<RestaurantsResponse>(SERVER+"/restaurants?search="+search+"&page="+page);
+    async getRestaurantSearch(search:string,page:number,creator?:number) : Promise<Restaurant[]>{
+        let resp = null;
+        if(creator == null){
+            resp = await this.#http.get<RestaurantsResponse>(SERVER+"/restaurants?search="+search+"&page="+page);
+        }else{
+            resp = await this.#http.get<RestaurantsResponse>(SERVER+"/restaurants?search="+search+"&page="+page+"&creator="+creator);
+        }
         return resp.restaurants
     }
     async getRestaurantComments(id: number) : Promise<Comment[]>{
@@ -77,12 +96,6 @@ export class RestaurantService {
             SERVER + `/restaurants?creator=${id}&page=${page}`
         );
         return resp.more;
-    }
-    async getRestaurantByCreatorSearch(id: number,page:number,search:string): Promise<Restaurant[]> {
-        const resp = await this.#http.get<RestaurantsResponse>(
-            SERVER + `/restaurants?creator=${id}&page=${page}&search=${search}`
-        );
-        return resp.restaurants;
     }
 
     async delete(id: number) {

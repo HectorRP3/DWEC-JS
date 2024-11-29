@@ -18,81 +18,93 @@ let page = 1;
 const buttonSearch = document.getElementById("searchBtn") as HTMLButtonElement;
 const inputSearch = document.getElementById("searchInput") as HTMLInputElement;
 const filterInfo = document.getElementById("filterInfo") as HTMLDivElement;
-
-
+const logOut = document.getElementById("logout") as HTMLButtonElement;
+if (localStorage.getItem("token") === null) {
+    location.assign("./login.html");
+}
+logOut.addEventListener("click", () => {
+    localStorage.removeItem("token");
+    location.assign("./login.html");
+});
 const creator = new URLSearchParams(window.location.search).get("creator");
 if (creator == null) {
     getrestaurants();
-    buttonSearch.addEventListener("click", async () => {
+} else {
+    getRestaurantByCreator();
+    page = 1;
+    const more = restaurantService.getMore(page, +creator!);
+    console.log(more);
+    more.then((e) => {
+        if (!e) {
+            buttonLoad.classList.add("d-none");
+        }
+    });
+}
+buttonSearch.addEventListener("click", async () => {
+    if (creator == null) {
         page = 1;
         const resp = await restaurantService.getRestaurantSearch(
             inputSearch.value,
             page
         );
         restaurants = resp;
-        filterInfo.append(`Filtrando por: ${inputSearch.value}`);
+        filterInfo.replaceChildren(`Filtrando por: ${inputSearch.value}`);
         showRestaurants(restaurants);
         const more = await restaurantService.getMore(page);
-        if (more) {
-            buttonLoad.classList.add("d-none");
-        }
-    });
-    buttonLoad.addEventListener("click", getrestaurants2);
-} else {
-    page = 1;
-    getRestaurantByCreator();
-    const information = await userService.getInformationUser(+creator!);
-    filterInfo.prepend("Creator: " + information.name + " ");
-    const more = await restaurantService.getRestaurantByCreatorMore(
-        +creator,
-        page
-    );
-    if (!more) {
-        buttonLoad.classList.add("d-none");
-    }
-    buttonSearch.addEventListener("click", async () => {
-        page = 1;
-        const resp = await restaurantService.getRestaurantByCreatorSearch(
-            +creator,
-            page,
-            inputSearch.value,
-        );
-        restaurants = resp;
-        filterInfo.append(`Filtrando por: ${inputSearch.value}`);
-        showRestaurants(restaurants);
-        const more = await restaurantService.getRestaurantByCreatorMore(
-            +creator,
-            page
-        );
         if (!more) {
             buttonLoad.classList.add("d-none");
         }
-    });
-    buttonLoad.addEventListener("click", getRestaurantByCreatorSearch);
-}
+    } else {
+        page = 1;
+        const resp = await restaurantService.getRestaurantSearch(
+            inputSearch.value,
+            page,
+            +creator!
+        );
+        const user = await userService.getInformationUser(+creator!);
+        restaurants = resp;
+        filterInfo.replaceChildren(
+            `Creator ${user.name} Filtrando por: ${inputSearch.value}`
+        );
+        showRestaurants(restaurants);
+        const more = await restaurantService.getMore(page, +creator!);
+        if (!more) {
+            buttonLoad.classList.add("d-none");
+        }
+    }
+});
+buttonLoad.addEventListener("click", getrestaurants2);
 
-async function getRestaurantByCreatorSearch(){
-    const resp = await restaurantService.getRestaurantByCreatorSearch(+creator!,page,inputSearch.value);
-    restaurants = resp;
-    showRestaurants(restaurants);
-}
 async function getRestaurantByCreator() {
     const resp = await restaurantService.getRestaurantByCreator(+creator!);
     restaurants = resp;
     showRestaurants(restaurants);
 }
 
-
-
 async function getrestaurants2() {
-    const more = await restaurantService.getMore(page);
-    if (more) {
-        page++;
-        const res = await restaurantService.getNextRestaurants(page);
-        restaurants = [...restaurants, ...res];
-        showRestaurants(restaurants);
+    if (creator == null) {
+        const more = await restaurantService.getMore(page);
+        if (more) {
+            page++;
+            const res = await restaurantService.getNextRestaurants(page);
+            restaurants = [...restaurants, ...res];
+            showRestaurants(restaurants);
+        } else {
+            buttonLoad.classList.add("d-none");
+        }
     } else {
-        buttonLoad.classList.add("d-none");
+        const more = await restaurantService.getMore(page, +creator!);
+        if (more) {
+            page++;
+            const res = await restaurantService.getNextRestaurants(
+                page,
+                +creator!
+            );
+            restaurants = [...restaurants, ...res];
+            showRestaurants(restaurants);
+        } else {
+            buttonLoad.classList.add("d-none");
+        }
     }
     getrestaurants2();
 }
