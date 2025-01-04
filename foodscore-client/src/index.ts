@@ -31,7 +31,6 @@ if (creator == null) {
     getrestaurants();
 } else {
     getRestaurantByCreator();
-    page = 1;
     const more = restaurantService.getMore(page, +creator!);
     console.log(more);
     more.then((e) => {
@@ -42,7 +41,6 @@ if (creator == null) {
 }
 buttonSearch.addEventListener("click", async () => {
     if (creator == null) {
-        page = 1;
         const resp = await restaurantService.getRestaurantSearch(
             inputSearch.value,
             page
@@ -53,9 +51,11 @@ buttonSearch.addEventListener("click", async () => {
         const more = await restaurantService.getMore(page);
         if (!more) {
             buttonLoad.classList.add("d-none");
+            page = 1;
+        }else{
+            page++;
         }
     } else {
-        page = 1;
         const resp = await restaurantService.getRestaurantSearch(
             inputSearch.value,
             page,
@@ -67,10 +67,14 @@ buttonSearch.addEventListener("click", async () => {
             `Creator ${user.name} Filtrando por: ${inputSearch.value}`
         );
         showRestaurants(restaurants);
+        console.log(page);
         const more = await restaurantService.getMore(page, +creator!);
         if (!more) {
             buttonLoad.classList.add("d-none");
-        }
+            page = 1;
+        }else{
+            page++;
+        };
     }
 });
 buttonLoad.addEventListener("click", getrestaurants2);

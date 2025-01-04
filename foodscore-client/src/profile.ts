@@ -34,10 +34,10 @@ logOut.addEventListener("click", () => {
 });
 let lat: number;
 let lng: number;
-const id = new URLSearchParams(window.location.search).get("id")
-if(id === null){
+const id = new URLSearchParams(window.location.search).get("id");
+if (id === null) {
     getInformationMe();
-}else{
+} else {
     getInformationUser();
 }
 
@@ -66,7 +66,6 @@ function user2HTML(user: User) {
         buttonEditPhoto.classList.add("d-none");
     }
 }
-
 
 cancelEditProfile.addEventListener("click", () => {
     profile.classList.remove("d-none");
@@ -103,13 +102,13 @@ buttonEditPassword.addEventListener("click", () => {
 
     passwordEdit.addEventListener("submit", async (e) => {
         e.preventDefault();
-        const newPassword = (document.getElementById(
-            "password"
-        ) as HTMLInputElement).value;
-        const newPassword2 = (document.getElementById(
-            "password2"
-        ) as HTMLInputElement).value;
-        if (newPassword!== newPassword2) {
+        const newPassword = (
+            document.getElementById("password") as HTMLInputElement
+        ).value;
+        const newPassword2 = (
+            document.getElementById("password2") as HTMLInputElement
+        ).value;
+        if (newPassword !== newPassword2) {
             alert("Las contraseñas no coinciden");
         } else {
             await user.putPassword({ password: newPassword });
@@ -132,7 +131,6 @@ buttonEditPhoto.addEventListener("change", () => {
         }
     });
 });
-
 
 function showMap() {
     const coords: Coordinates = { latitude: lat, longitude: lng };

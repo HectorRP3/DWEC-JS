@@ -1,54 +1,63 @@
-import {RestaurantsService} from "./restaurant-service.class.js"
+import { RestaurantsService } from "./restaurant-service.class.js";
 
-
+let restaurant = [];
 let restaurantService = new RestaurantsService();
-let placesContainer = document.getElementById("placesContainer")
-const restTemplate = document.getElementById("restaurantTemplate")
-let filtar = document.getElementById("search")
-const WEEKDAYS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
-let buttonDelete = document.querySelector(".delete")
+const placesContainer = document.getElementById("placesContainer");
+const searchInput = document.getElementById("search");
+const restTemplate = document.getElementById("restaurantTemplate");
+const WEEKDAYS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+// let buttonDelete = document.querySelector(".delete")
 
-function addEvent(rest) {
-    let daysar=Array.from(rest.daysOpen)
-    const userHTML = restTemplate.content.cloneNode(true);
-    const col  = userHTML.firstElementChild;
-    col.querySelector(".card-img-top").src = rest.image;
-    col.querySelector(".card-title").textContent = rest.name;
-    col.querySelector("p.card-text").textContent =rest.description;
-    col
-        .querySelector("div.card-text .text-muted")
-        .append(daysar.map((d) => WEEKDAYS[d]).join(", "));
-    if (daysar.includes(new Date().getDay().toString())) {
-        col.querySelector(".badge.bg-danger").remove();
-    } else {
-        col.querySelector(".badge.bg-success").remove();
+function addEvent(restaurant) {
+  let col = restTemplate.content.cloneNode(true).firstElementChild;
+  col.querySelector(".card-img-top").src = restaurant.image;
+  col.querySelector(".card-title").textContent = restaurant.name;
+  col.querySelector("p.card-text").textContent = restaurant.description;
+  col
+    .querySelector("div.card-text .text-muted")
+    .append(restaurant.daysOpen.map((d) => WEEKDAYS[d]).join(", "));
+  if (restaurant.daysOpen.includes(new Date().getDay().toString())) {
+    col.querySelector(".badge.bg-danger").remove();
+  } else {
+    col.querySelector(".badge.bg-success").remove();
+  }
+  col.querySelector(".phone").append(restaurant.phone);
+  col.querySelector(".card-footer small").textContent = restaurant.cuisine;
+  col.querySelector("button.delete").addEventListener("click", async (e) => {
+    let del = confirm("¿Seguro que quieres borrar el restaurante?");
+    if (del) {
+      try {
+        await restaurantService.delete(restaurant.id);
+        restaurant = restaurant.filter((r) => r.id !== restaurant.id);
+        col.remove();
+      } catch (e) {
+        alert("¡Error borrando restaurante!");
+        console.error(e);
+      }
     }
-    col.querySelector(".phone").append(rest.phone);
-    col.querySelector(".card-footer small").textContent = rest.cuisine;
-    col.querySelector(".delete").addEventListener("click",async() =>{
-        await restaurantService.delete(rest.id)
-        col.remove()
-    })
-    placesContainer.append(col);
+  });
+  return col;
 }
 
-async function getRestaurant(){
-    const rest = await restaurantService.getAll()
-    rest.forEach(addEvent);
+async function getRestaurant() {
+  restaurant = await restaurantService.getAll();
+  showRestaurants(restaurant);
 }
-getRestaurant()
 
-function filterRestaurants(){
-    let filter = filtar.value.toLowerCase()
-    let rest = document.querySelectorAll(".col")
-    rest.forEach((restaurant) => {
-        let name = restaurant.querySelector(".card-title").textContent.toLowerCase()
-        let description = restaurant.querySelector("p.card-text").textContent.toLocaleLowerCase()
-        if(name.includes(filter)||description.includes(filter)){
-            restaurant.classList.remove("d-none")
-        }else{
-            restaurant.classList.add("d-none")
-        }
-    })
+function showRestaurants(restaurants) {
+  placesContainer.replaceChildren(...restaurants.map((rest) => addEvent(rest)));
 }
-filtar.addEventListener("input", filterRestaurants)
+
+//main
+getRestaurant();
+
+searchInput.addEventListener("keyup", (e) => {
+  const filtered = restaurant.filter(
+    (rest) =>
+      rest.name.toLowerCase().includes(searchInput.value.toLocaleLowerCase()) ||
+      rest.description
+        .toLowerCase()
+        .includes(searchInput.value.toLocaleLowerCase())
+  );
+  showRestaurants(filtered);
+});

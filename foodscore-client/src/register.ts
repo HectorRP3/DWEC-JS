@@ -52,14 +52,22 @@ async function submitForm(event: Event) {
     event.preventDefault();
     const name = (form.elements.namedItem("name") as HTMLInputElement).value;
     const email = form.email.value as string;
+    const email2 = form.email2.value as string;
     const password = form.password.value as string;
     const lat = +form.lat.value;
     const lng = +form.lng.value;
     const avatar = imgPreview.src;
 
     const rest = createRestJson(name, email, password, lat, lng, avatar);
-
-    await authServices
+    if(email !== email2){
+        Swal.fire({
+            title: "Error",
+            text: "Los emails no coinciden",
+            icon: "error",
+        });
+        return;
+    }else{
+        await authServices
         .postRegister(rest)
         .then(() => {
             form.reset();
@@ -71,8 +79,9 @@ async function submitForm(event: Event) {
                 title: "Error",
                 text: "Faltan datos del usuario",
                 icon: "error",
+            });
         });
-    });
+    }
 }
 function createRestJson(
     name: string,
