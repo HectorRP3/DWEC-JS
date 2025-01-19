@@ -46,6 +46,13 @@ export class RestaurantPageComponent {
     this.restaurants.push(this.newRestaurant);
     this.resetResutaurant();
     this.image.value = "";
+    /*
+    Mirando el pdf del ejercicio ponia una imagen del  <form class="mt-4" (ngSubmit)="addRestaurant()" > 
+    y como no sabia si se podia hacer de la otra forma te lo he hecho de esta pero se prodia pasar a la función ngForm
+    y resetear más facilmente los campos del formulario
+    <form class="mt-4" #restaurantForm="ngForm" (ngSubmit)="addRestaurant(restaurantForm)">
+    Ya que se me queda el input de la imagen sin limpiar se vacia pero no se limpia el campo de texto
+     */
   }
   resetResutaurant(){
     this.newRestaurant = {
