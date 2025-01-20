@@ -20,7 +20,9 @@ export class RestaurantsPageComponent {
 
   restaurantFiltered = computed(()=> this.restaurants().filter((r)=>{
       if(this.showOpens()){
-        return (r.daysOpen[this.weekDay] === "0") && (r.name.toLowerCase().includes(this.search().toLowerCase()) 
+        console.log(this.showOpens());
+        console.log(r.daysOpen[this.weekDay]);
+        return (r.daysOpen[this.weekDay] === this.weekDay.toString()) && (r.name.toLowerCase().includes(this.search().toLowerCase()) 
           || r.description.toLowerCase().includes(this.search().toLowerCase()))
       }else{
         return r.name.toLowerCase().includes(this.search().toLowerCase()) || r.description.toLowerCase().includes(this.search().toLowerCase())
