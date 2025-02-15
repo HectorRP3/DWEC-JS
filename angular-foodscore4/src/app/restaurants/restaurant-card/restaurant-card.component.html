@@ -1,9 +1,14 @@
 <div class="card h-100 shadow">
-  <img class="card-img-top" [src]="restaurant().image" alt="" />
+  <img
+    [routerLink]="['/restaurants', restaurant().id]"
+    class="card-img-top"
+    [src]="restaurant().image"
+    alt=""
+  />
   <div class="card-body">
-    <button class="btn btn-danger delete" (click)="deleteRestaurant()">
+    <!-- <button class="btn btn-danger delete" (click)="deleteRestaurant()">
       <i class="bi bi-trash"></i>
-    </button>
+    </button> -->
     <h4 class="card-title">
       <a [routerLink]="['/restaurants', restaurant().id]">{{
         restaurant().name

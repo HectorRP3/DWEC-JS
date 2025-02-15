@@ -1,10 +1,11 @@
 import { Component, DestroyRef, inject, output } from '@angular/core';
-import { Restaurant, RestaurantInsert } from '../interfaces/restaurant';
-import { FormsModule } from '@angular/forms';
-import { EncodeBase64Directive } from '../directives/encode-base64.directive';
-import { RestaurantsService } from '../services/restaurants.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { EncodeBase64Directive } from '../../shared/directives/encode-base64.directive';
+import { CanComponentDeactivate } from '../../shared/guards/leave-page.guard';
+import { Restaurant, RestaurantInsert } from '../interfaces/restaurant';
+import { RestaurantsService } from '../services/restaurants.service';
 
 @Component({
   selector: 'restaurant-form',
@@ -12,7 +13,7 @@ import { Router } from '@angular/router';
   templateUrl: './restaurant-form.component.html',
   styleUrl: './restaurant-form.component.css',
 })
-export class RestaurantFormComponent {
+export class RestaurantFormComponent implements CanComponentDeactivate {
   #restaurantService = inject(RestaurantsService);
   #destroyRef = inject(DestroyRef);
   #router = inject(Router);
@@ -28,6 +29,8 @@ export class RestaurantFormComponent {
     this.resetForm();
   }
 
+  saved = false;
+
   addRestaurant() {
     this.newRestaurant.daysOpen = this.days
       .map((d, i) => String(i))
@@ -36,13 +39,19 @@ export class RestaurantFormComponent {
       .addRestaurant(this.newRestaurant)
       .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe({
-        next: () => {
-          this.#router.navigate(['/restaurants']);
+        next: (res) => {
+          this.saved = true;
+          this.#router.navigate(['/restaurants', res.id]);
         },
         error: () => console.log('error'),
       });
   }
-
+  canDeactivate() {
+    return (
+      this.saved ||
+      confirm('¿Quieres abandonar la página?. Los cambios se perderán...')
+    );
+  }
   resetForm() {
     this.newRestaurant = {
       name: '',

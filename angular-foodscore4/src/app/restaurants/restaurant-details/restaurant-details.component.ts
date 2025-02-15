@@ -1,10 +1,4 @@
-import {
-  Component,
-  DestroyRef,
-  inject,
-  input,
-  numberAttribute,
-} from '@angular/core';
+import { Component, DestroyRef, inject, input } from '@angular/core';
 import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Title } from '@angular/platform-browser';
 import { Router, RouterLink } from '@angular/router';
@@ -18,7 +12,7 @@ import { RestaurantsService } from '../services/restaurants.service';
   styleUrl: './restaurant-details.component.css',
 })
 export class RestaurantDetailsComponent {
-  id = input.required({ transform: numberAttribute });
+  id = input.required<number>();
   #restaurantService = inject(RestaurantsService);
   // restaurant = input.required<Restaurant>();
   weekDay: number = new Date().getDay();

@@ -1,33 +1,17 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './login/login.component';
-import { RestaurantDetailsComponent } from './restaurant-details/restaurant-details.component';
-import { RestaurantFormComponent } from './restaurant-form/restaurant-form.component';
-import { RestaurantsPageComponent } from './restaurants-page/restaurants-page.component';
 
 export const routes: Routes = [
-  { path: 'auth/login', component: LoginComponent, title: 'Login | FoodScore' },
+  {
+    path: 'auth',
+    loadChildren: () => import('./auth/auth.routes').then((m) => m.authRoutes),
+  },
   {
     path: 'restaurants',
-    children: [
-      {
-        path: '',
-        component: RestaurantsPageComponent,
-        title: 'Restaurantes | FoodScore',
-      },
-      {
-        path: 'add',
-        title: 'Añadir Restaurante | FoodScore',
-        component: RestaurantFormComponent,
-      },
-      {
-        path: ':id',
-        // resolve: {
-        //   restaurant: restaurantResolver,
-        // },
-        component: RestaurantDetailsComponent,
-      },
-    ],
+    loadChildren: () =>
+      import('./restaurants/restaurants.routes').then(
+        (m) => m.restaurantsRoutes
+      ),
   },
-  { path: '', redirectTo: '/restaurants', pathMatch: 'full' },
-  { path: '**', redirectTo: '/restaurants' },
+  { path: '', redirectTo: '/auth/login', pathMatch: 'full' },
+  { path: '**', redirectTo: '/auth/login' },
 ];
