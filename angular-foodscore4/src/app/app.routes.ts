@@ -5,12 +5,20 @@ import { RestaurantFormComponent } from './restaurant-form/restaurant-form.compo
 import { RestaurantsPageComponent } from './restaurants-page/restaurants-page.component';
 
 export const routes: Routes = [
-  { path: 'auth/login', component: LoginComponent },
+  { path: 'auth/login', component: LoginComponent, title: 'Login | FoodScore' },
   {
     path: 'restaurants',
     children: [
-      { path: '', component: RestaurantsPageComponent },
-      { path: 'add', component: RestaurantFormComponent },
+      {
+        path: '',
+        component: RestaurantsPageComponent,
+        title: 'Restaurantes | FoodScore',
+      },
+      {
+        path: 'add',
+        title: 'Añadir Restaurante | FoodScore',
+        component: RestaurantFormComponent,
+      },
       {
         path: ':id',
         // resolve: {

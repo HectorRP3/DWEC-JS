@@ -1,13 +1,19 @@
-import { Component, inject, input, numberAttribute } from '@angular/core';
-import { rxResource } from '@angular/core/rxjs-interop';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  input,
+  numberAttribute,
+} from '@angular/core';
+import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Title } from '@angular/platform-browser';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { catchError, EMPTY, tap } from 'rxjs';
 import { RestaurantsService } from '../services/restaurants.service';
 
 @Component({
   selector: 'restaurant-details',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './restaurant-details.component.html',
   styleUrl: './restaurant-details.component.css',
 })
@@ -20,8 +26,8 @@ export class RestaurantDetailsComponent {
 
   #title = inject(Title);
   #router = inject(Router);
-  // #destroyRef = inject(DestroyRef);
-  // #changeDetertor = inject(ChangeDetectorRef);
+  #destroyRef = inject(DestroyRef);
+  //#changeDetertor = inject(ChangeDetectorRef);
 
   contructor() {
     // effect(() => {
@@ -43,5 +49,12 @@ export class RestaurantDetailsComponent {
 
   getOpenDayNames(daysOpen: string[]) {
     return daysOpen.map((d) => this.days[+d]).join(', ');
+  }
+
+  deleteRestaurant() {
+    this.#restaurantService
+      .deleteRestaurant(this.id())
+      .pipe(takeUntilDestroyed(this.#destroyRef))
+      .subscribe(() => this.#router.navigate(['/restaurants']));
   }
 }

@@ -3,57 +3,65 @@
   <span class="visually-hidden">Loading...</span>
 </div>
 }@else {
-
-<div class="col">
-  <div class="card h-100 shadow">
-    <a href=""
-      ><img
-        class="card-img-top"
-        [src]="restaurantResource.value()?.image"
-        alt=""
-    /></a>
-    <div class="card-body">
-      <!-- Quitar botón borrar si no es tuyo -->
-      <button class="btn btn-danger delete"><i class="bi bi-trash"></i></button>
-      <h4 class="card-title">
-        {{ restaurantResource.value()?.name }}
-      </h4>
-      <p class="card-text description">
-        {{ restaurantResource.value()?.description }}
-      </p>
-      <div>
-        <small class="text-muted days">
-          <strong
-            >Días: {{ getOpenDayNames(restaurantResource.value()!.daysOpen) }}
-          </strong>
-          <span class="days"></span>
-        </small>
-        @if(restaurantResource.value()?.daysOpen!.includes(weekDay.toString()))
-        {
-        <span class="badge ms-2 bg-success">Abierto</span>
-        } @else {
-        <span class="badge ms-2 bg-danger">Cerrado</span>
-        }
+<div class="mt-4">
+  <div class="col">
+    <div class="card h-100 shadow">
+      <a href=""
+        ><img
+          class="card-img-top"
+          [src]="restaurantResource.value()?.image"
+          alt=""
+      /></a>
+      <div class="card-body">
+        <!-- Quitar botón borrar si no es tuyo -->
+        <button class="btn btn-danger delete" (click)="deleteRestaurant()">
+          <i class="bi bi-trash"></i>
+        </button>
+        <h4 class="card-title">
+          {{ restaurantResource.value()?.name }}
+        </h4>
+        <p class="card-text description">
+          {{ restaurantResource.value()?.description }}
+        </p>
+        <div>
+          <small class="text-muted days">
+            <strong
+              >Días: {{ getOpenDayNames(restaurantResource.value()!.daysOpen) }}
+            </strong>
+            <span class="days"></span>
+          </small>
+          @if(restaurantResource.value()?.daysOpen!.includes(weekDay.toString()))
+          {
+          <span class="badge ms-2 bg-success">Abierto</span>
+          } @else {
+          <span class="badge ms-2 bg-danger">Cerrado</span>
+          }
+        </div>
+        <div>
+          <small class="text-muted phone">
+            <strong>Teléfono: {{ restaurantResource.value()?.phone }} </strong>
+            <span class="phone"></span>
+          </small>
+        </div>
+        <!-- <div> -->
+        <!-- <small class="text-muted stars"> -->
+        <!-- Rellenar con ★ <i class="bi bi-star"></i> o ☆ <i class="bi bi-star-fill"></i> -->
+        <!-- Después poner el número con la puntuación. Ej: 3.46 -->
+        <!-- </small> -->
+        <!-- </div> -->
       </div>
-      <div>
-        <small class="text-muted phone">
-          <strong>Teléfono: {{ restaurantResource.value()?.phone }} </strong>
-          <span class="phone"></span>
-        </small>
+      <div class="card-footer">
+        <small class="text-muted cuisine">{{
+          restaurantResource.value()?.cuisine
+        }}</small>
+        <!-- <small class="text-muted float-end distance"> </small> -->
       </div>
-      <!-- <div> -->
-      <!-- <small class="text-muted stars"> -->
-      <!-- Rellenar con ★ <i class="bi bi-star"></i> o ☆ <i class="bi bi-star-fill"></i> -->
-      <!-- Después poner el número con la puntuación. Ej: 3.46 -->
-      <!-- </small> -->
-      <!-- </div> -->
-    </div>
-    <div class="card-footer">
-      <small class="text-muted cuisine">{{
-        restaurantResource.value()?.cuisine
-      }}</small>
-      <!-- <small class="text-muted float-end distance"> </small> -->
     </div>
   </div>
 </div>
 }
+<div class="mt-4">
+  <a class="btn btn-success" [routerLink]="['/restaurants']">
+    <i class="bi bi-arrow-left"></i> Volver</a
+  >
+</div>
