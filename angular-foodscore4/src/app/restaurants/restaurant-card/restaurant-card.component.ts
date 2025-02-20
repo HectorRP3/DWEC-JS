@@ -1,6 +1,8 @@
-import { Component, input, output } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, DestroyRef, inject, input, output } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import { Restaurant } from '../interfaces/restaurant';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { RestaurantsService } from '../services/restaurants.service';
 
 @Component({
   selector: 'restaurant-card',
@@ -9,11 +11,11 @@ import { Restaurant } from '../interfaces/restaurant';
   styleUrl: './restaurant-card.component.css',
 })
 export class RestaurantCardComponent {
-  //#restaunrantService = inject(RestaurantsService);
-  //#destroyRef = inject(DestroyRef);
+  #restaunrantService = inject(RestaurantsService);
+  #destroyRef = inject(DestroyRef);
   weekDay: number = new Date().getDay();
   readonly days = ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'];
-
+  #router = inject(Router);
   restaurant = input.required<Restaurant>();
   deleted = output<void>();
 
@@ -21,10 +23,13 @@ export class RestaurantCardComponent {
     return daysOpen.map((d) => this.days[+d]).join(', ');
   }
 
-  // deleteRestaurant() {
-  //   this.#restaunrantService
-  //     .deleteRestaurant(this.restaurant().id!)
-  //     .pipe(takeUntilDestroyed(this.#destroyRef))
-  //     .subscribe(() => this.deleted.emit());
-  // }
+  deleteRestaurant() {
+    this.#restaunrantService
+      .deleteRestaurant(this.restaurant().id!)
+      .pipe(takeUntilDestroyed(this.#destroyRef))
+      .subscribe(() => {
+        this.#router.navigate(['/restaurants']);
+        this.deleted.emit();
+      });
+  }
 }

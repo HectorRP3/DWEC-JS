@@ -1,13 +1,14 @@
-import { Component, DestroyRef, inject, input } from '@angular/core';
-import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Component, inject, input } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { Title } from '@angular/platform-browser';
 import { Router, RouterLink } from '@angular/router';
 import { catchError, EMPTY, tap } from 'rxjs';
+import { RestaurantCardComponent } from '../restaurant-card/restaurant-card.component';
 import { RestaurantsService } from '../services/restaurants.service';
 
 @Component({
   selector: 'restaurant-details',
-  imports: [RouterLink],
+  imports: [RouterLink, RestaurantCardComponent],
   templateUrl: './restaurant-details.component.html',
   styleUrl: './restaurant-details.component.css',
 })
@@ -20,7 +21,7 @@ export class RestaurantDetailsComponent {
 
   #title = inject(Title);
   #router = inject(Router);
-  #destroyRef = inject(DestroyRef);
+  // #destroyRef = inject(DestroyRef);
   //#changeDetertor = inject(ChangeDetectorRef);
 
   contructor() {
@@ -43,12 +44,5 @@ export class RestaurantDetailsComponent {
 
   getOpenDayNames(daysOpen: string[]) {
     return daysOpen.map((d) => this.days[+d]).join(', ');
-  }
-
-  deleteRestaurant() {
-    this.#restaurantService
-      .deleteRestaurant(this.id())
-      .pipe(takeUntilDestroyed(this.#destroyRef))
-      .subscribe(() => this.#router.navigate(['/restaurants']));
   }
 }
