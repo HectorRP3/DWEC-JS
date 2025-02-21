@@ -1,52 +1,64 @@
-<form class="mt-4" (ngSubmit)="addRestaurant()">
+<form [formGroup]="restaurantForm" class="mt-4" (submit)="addRestaurant()">
   <div class="mb-3">
     <label for="name">Nombre</label>
     <input
       type="text"
       class="form-control"
-      name="name"
-      id="name"
       placeholder="Enter name"
-      [(ngModel)]="newRestaurant.name"
+      formControlName="name"
+      [validationClasses]="{ valid: 'is-valid', invalid: 'is-invalid' }"
     />
+    @let nombreModel = restaurantForm.controls.name;
+    @if(nombreModel.errors?.['required']) {
+    <div class="invalid-feedback">El nombre es requerido</div>
+    } @if(nombreModel.errors?.['pattern']) {
+    <div class="invalid-feedback">El nombre no es válido</div>
+    }
   </div>
   <div class="mb-3">
     <label for="description">Descripción</label>
     <textarea
       class="form-control"
-      id="description"
-      name="description"
       rows="3"
       placeholder="Description"
-      [(ngModel)]="newRestaurant.description"
+      formControlName="description"
+      [validationClasses]="{ valid: 'is-valid', invalid: 'is-invalid' }"
     ></textarea>
+    @let descriptionModel = restaurantForm.controls.description;
+    @if(descriptionModel.errors?.['required']) {
+    <div class="invalid-feedback">La descripción es requerida</div>
+    }
   </div>
   <div class="mb-3">
     <label for="cuisine">Cocina</label>
     <input
       type="text"
       class="form-control"
-      name="cuisine"
-      id="cuisine"
       placeholder="Cuisine"
-      [(ngModel)]="newRestaurant.cuisine"
+      formControlName="cuisine"
+      [validationClasses]="{ valid: 'is-valid', invalid: 'is-invalid' }"
     />
+    @let cuisineModel = restaurantForm.controls.cuisine;
+    @if(cuisineModel.errors?.['required']) {
+    <div class="invalid-feedback">La cocina es requerida</div>
+    }
   </div>
   <p>Días de apertura</p>
-  <div class="mb-3">
+  <div class="mb-3" formArrayName="daysOpen" oneChecked>
     @for(day of days; track $index; let i = $index) {
     <div class="form-check form-check-inline">
       <input
         type="checkbox"
         class="custom-control-input"
         id="checkDay{{ i }}"
-        name="days"
-        [(ngModel)]="daysOpen[i]"
+        [formControlName]="i"
       />
       <label class="custom-control-label ms-2" for="checkDay{{ i }}">{{
         day
       }}</label>
     </div>
+    } @if(restaurantForm.controls.daysOpen.invalid) {
+    <div class="text-danger">You must select at least one input</div>
     }
   </div>
   <div class="mb-3">
@@ -54,30 +66,42 @@
     <input
       type="number"
       class="form-control"
-      id="phone"
-      name="phone"
       placeholder="Phone number"
-      [(ngModel)]="newRestaurant.phone"
+      formControlName="phone"
+      [validationClasses]="{ valid: 'is-valid', invalid: 'is-invalid' }"
     />
+    @let phoneModel = restaurantForm.controls.phone;
+    @if(phoneModel.errors?.['required']) {
+    <div class="invalid-feedback">El teléfono es requerido</div>
+    } @if(phoneModel.errors?.['pattern']) {
+    <div class="invalid-feedback">El teléfono no es válido</div>
+    }
   </div>
   <div class="mb-3">
     <label for="image">Main photo</label>
     <input
       type="file"
       class="form-control"
-      id="image"
-      name="image"
-      [(ngModel)]="filename"
+      accept="image/*"
       encodeBase64
-      (encoded)="newRestaurant.image= $event"
+      (encoded)="imageBase64 = $event"
+      formControlName="image"
+      [validationClasses]="{ valid: 'is-valid', invalid: 'is-invalid' }"
     />
+    <div class="invalid-feedback">Image cannot be empty</div>
   </div>
-  @if(newRestaurant.image) {
-    <img [src]="newRestaurant.image" alt="" id="imgPreview" class="img-thumbnail mb-3" />
+  @if(imageBase64) {
+  <img [src]="imageBase64" alt="" id="imgPreview" class="img-thumbnail mb-3" />
   }
 
   <div>
-    <button type="submit" class="btn btn-primary">Crear</button>
+    <button
+      type="submit"
+      class="btn btn-primary"
+      [disabled]="restaurantForm.invalid"
+    >
+      Crear
+    </button>
   </div>
   <!-- {{this.newRestaurant | json}} -->
 </form>
