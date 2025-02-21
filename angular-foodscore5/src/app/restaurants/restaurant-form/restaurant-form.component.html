@@ -1,0 +1,135 @@
+<form class="mt-4" (ngSubmit)="addRestaurant()" #addForm="ngForm">
+  <div class="mb-3">
+    <label for="name">Nombre</label>
+    <input
+      type="text"
+      class="form-control"
+      name="name"
+      id="name"
+      required
+      pattern="^[a-zA-Z][a-zA-Z ][a-zA-Z]*$"
+      #nombreModel="ngModel"
+      placeholder="Enter name"
+      [(ngModel)]="newRestaurant.name"
+      [validationClasses]="{ valid: 'is-valid', invalid: 'is-invalid' }"
+    />
+    @if(nombreModel.errors?.['required']) {
+    <div class="invalid-feedback">El nombre es obligatorio</div>
+    } @if(nombreModel.errors?.['pattern']) {
+    <div class="invalid-feedback">El nombre debe contener solo letras</div>
+    }
+  </div>
+
+  <div class="mb-3">
+    <label for="description">Descripción</label>
+    <textarea
+      class="form-control"
+      id="description"
+      name="description"
+      rows="3"
+      required
+      placeholder="Description"
+      #descModel="ngModel"
+      [(ngModel)]="newRestaurant.description"
+      [validationClasses]="{ valid: 'is-valid', invalid: 'is-invalid' }"
+    ></textarea>
+    @if(nombreModel.errors?.['required']) {
+    <div class="invalid-feedback">El nombre es obligatorio</div>
+    }
+  </div>
+  <div class="mb-3">
+    <label for="cuisine">Cocina</label>
+    <input
+      type="text"
+      class="form-control"
+      name="cuisine"
+      id="cuisine"
+      placeholder="Cuisine"
+      required
+      #cuisineModel="ngModel"
+      [validationClasses]="{ valid: 'is-valid', invalid: 'is-invalid' }"
+      [(ngModel)]="newRestaurant.cuisine"
+    />
+    @if(cuisineModel.errors?.['required']) {
+    <div class="invalid-feedback">La cocina es obligatoria</div>
+    }
+  </div>
+  <p>Días de apertura</p>
+  <div
+    class="mb-3"
+    ngModelGroup="daysGroup"
+    #daysModel="ngModelGroup"
+    oneChecked
+  >
+    @for(day of days; track $index; let i = $index) {
+    <div class="form-check form-check-inline">
+      <input
+        type="checkbox"
+        class="custom-control-input"
+        id="checkDay{{ i }}"
+        name="days{{ i }}"
+        [(ngModel)]="daysOpen[i]"
+      />
+      <label class="custom-control-label ms-2" for="checkDay{{ i }}">{{
+        day
+      }}</label>
+    </div>
+    } @if(daysModel.invalid) {
+    <div class="text-danger">You must select at least one input</div>
+    }
+  </div>
+  <div class="mb-3">
+    <label for="phone">Teléfono</label>
+    <input
+      type="number"
+      class="form-control"
+      id="phone"
+      name="phone"
+      placeholder="Phone number"
+      minlength="10"
+      required
+      pattern="([+0]?[0-9]{2} ?)?[0-9]{9}"
+      #phoneModel="ngModel"
+      [validationClasses]="{ valid: 'is-valid', invalid: 'is-invalid' }"
+      [(ngModel)]="newRestaurant.phone"
+    />
+    @if(phoneModel.errors?.['required']) {
+    <div class="invalid-feedback">El teléfono es obligatorio</div>
+    } @if(phoneModel.errors?.['pattern']) {
+    <div class="invalid-feedback">
+      El teléfono debe tener al menos 9 dígitos
+    </div>
+    }
+  </div>
+  <div class="mb-3">
+    <label for="image">Main photo</label>
+    <input
+      type="file"
+      class="form-control"
+      id="image"
+      name="image"
+      [(ngModel)]="filename"
+      encodeBase64
+      required
+      #imageModel="ngModel"
+      [validationClasses]="{ valid: 'is-valid', invalid: 'is-invalid' }"
+      (encoded)="newRestaurant.image = $event"
+    />
+    <div class="invalid-feedback">Image cannot be empty</div>
+  </div>
+  @if(newRestaurant.image) {
+  <img
+    [src]="newRestaurant.image"
+    alt=""
+    id="imgPreview"
+    class="img-thumbnail mb-3"
+  />
+  }
+
+  <div>
+    <button type="submit" class="btn btn-primary" [disabled]="addForm.invalid">
+      Crear
+    </button>
+  </div>
+  <!-- {{this.newRestaurant | json}} -->
+</form>
