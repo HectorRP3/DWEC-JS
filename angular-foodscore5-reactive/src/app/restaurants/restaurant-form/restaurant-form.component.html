@@ -5,6 +5,7 @@
       type="text"
       class="form-control"
       placeholder="Enter name"
+      id="name"
       formControlName="name"
       [validationClasses]="{ valid: 'is-valid', invalid: 'is-invalid' }"
     />
@@ -21,6 +22,7 @@
       class="form-control"
       rows="3"
       placeholder="Description"
+      id="description"
       formControlName="description"
       [validationClasses]="{ valid: 'is-valid', invalid: 'is-invalid' }"
     ></textarea>
@@ -35,6 +37,7 @@
       type="text"
       class="form-control"
       placeholder="Cuisine"
+      id="cuisine"
       formControlName="cuisine"
       [validationClasses]="{ valid: 'is-valid', invalid: 'is-invalid' }"
     />
@@ -44,16 +47,16 @@
     }
   </div>
   <p>Días de apertura</p>
-  <div class="mb-3" formArrayName="daysOpen" oneChecked>
+  <div class="mb-3">
     @for(day of days; track $index; let i = $index) {
-    <div class="form-check form-check-inline">
+    <div class="form-check form-check-inline" formArrayName="daysOpen">
       <input
         type="checkbox"
         class="custom-control-input"
-        id="checkDay{{ i }}"
+        id="day{{ i }}"
         [formControlName]="i"
       />
-      <label class="custom-control-label ms-2" for="checkDay{{ i }}">{{
+      <label class="custom-control-label ms-2" for="day{{ i }}">{{
         day
       }}</label>
     </div>
@@ -68,6 +71,7 @@
       class="form-control"
       placeholder="Phone number"
       formControlName="phone"
+      id="phone"
       [validationClasses]="{ valid: 'is-valid', invalid: 'is-invalid' }"
     />
     @let phoneModel = restaurantForm.controls.phone;
@@ -83,6 +87,7 @@
       type="file"
       class="form-control"
       accept="image/*"
+      id="image"
       encodeBase64
       (encoded)="imageBase64 = $event"
       formControlName="image"
@@ -105,3 +110,4 @@
   </div>
   <!-- {{this.newRestaurant | json}} -->
 </form>
+{{ restaurantForm.value | json }}

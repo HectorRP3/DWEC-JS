@@ -13,6 +13,7 @@ import { Restaurant, RestaurantInsert } from '../interfaces/restaurant';
 import { RestaurantsService } from '../services/restaurants.service';
 import { ValidationClassesDirective } from '../../shared/directives/validation-classes.directive';
 import { oneCheckedValidator } from '../../shared/validators/oneCheckedValidator';
+import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'restaurant-form',
@@ -21,6 +22,7 @@ import { oneCheckedValidator } from '../../shared/validators/oneCheckedValidator
     EncodeBase64Directive,
     ReactiveFormsModule,
     ValidationClassesDirective,
+    JsonPipe,
   ],
   templateUrl: './restaurant-form.component.html',
   styleUrl: './restaurant-form.component.css',
@@ -34,7 +36,7 @@ export class RestaurantFormComponent implements CanComponentDeactivate {
   restaurantForm = this.#fb.group({
     name: [
       '',
-      [Validators.required, Validators.pattern(/^[a-zA-Z][a-zA-Z ][a-zA-Z]*$/)],
+      [Validators.required, Validators.pattern(/^[a-zA-Z][a-zA-Z ]*[a-zA-Z]$/)],
     ],
     description: ['', [Validators.required]],
     cuisine: ['', [Validators.required]],
@@ -47,8 +49,6 @@ export class RestaurantFormComponent implements CanComponentDeactivate {
 
   readonly days = ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'];
   add = output<Restaurant>();
-  daysOpen!: boolean[];
-
   filename = '';
 
   imageBase64 = '';
@@ -59,9 +59,11 @@ export class RestaurantFormComponent implements CanComponentDeactivate {
     const newRestaurant: RestaurantInsert = {
       ...this.restaurantForm.getRawValue(),
       image: this.imageBase64,
-      daysOpen: this.days.map((d, i) => String(i)),
+      daysOpen: this.days
+        .map((d, i) => String(i))
+        .filter((i) => this.restaurantForm.value.daysOpen?.[+i]),
     };
-
+    console.log(newRestaurant);
     this.#restaurantService
       .addRestaurant(newRestaurant)
       .pipe(takeUntilDestroyed(this.#destroyRef))
