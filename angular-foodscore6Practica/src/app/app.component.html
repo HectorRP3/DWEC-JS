@@ -1,33 +1,4 @@
-<nav class="navbar navbar-expand navbar-dark bg-dark">
-  <div class="container-fluid">
-    <a class="navbar-brand" [routerLink]="['/restaurants']">{{ title }}</a>
-    <ul class="navbar-nav me-auto mb-lg-0">
-      <li class="nav-item">
-        <a
-          class="nav-link active"
-          [routerLink]="['/restaurants']"
-          [routerLinkActive]="['active']"
-          [routerLinkActiveOptions]="{ exact: true }"
-          >Principal</a
-        >
-      </li>
-      <li class="nav-item">
-        <a
-          class="nav-link"
-          [routerLink]="['/restaurants', 'add']"
-          [routerLinkActive]="['active']"
-          >Crear restaurante</a
-        >
-      </li>
-    </ul>
-    <ul class="navbar-nav">
-      <li class="nav-item">
-        <a class="nav-link" href="#" id="logout">Salir</a>
-      </li>
-    </ul>
-  </div>
-</nav>
-
+<menu class="m-0 p-0"></menu>
 <div class="container">
   <router-outlet></router-outlet>
 </div>

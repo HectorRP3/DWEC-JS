@@ -1,13 +1,13 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
-import { SingleUserResponse } from '../../shared/interfaces/responses';
+import { inject, Injectable, signal } from '@angular/core';
+import { catchError, map, Observable, of } from 'rxjs';
+import { SingleUserResponse } from '../../profile/interfaces/responses';
 import {
   User,
   UserLogin,
   UserLoginFacebook,
   UserLoginGoogle,
-} from '../../shared/interfaces/user';
+} from '../../profile/interfaces/user';
 import { TokenResponse } from '../../restaurants/interfaces/response';
 
 @Injectable({
@@ -16,11 +16,45 @@ import { TokenResponse } from '../../restaurants/interfaces/response';
 export class AuthService {
   #authUrl = 'auth';
   #http = inject(HttpClient);
+  #logged = signal(false);
+
+  getLogged() {
+    return this.#logged();
+  }
 
   postLogin(user: UserLogin): Observable<TokenResponse> {
-    return this.#http
-      .post<TokenResponse>(`${this.#authUrl}/login`, user)
-      .pipe(map((res) => res));
+    return this.#http.post<TokenResponse>(`${this.#authUrl}/login`, user).pipe(
+      map((res) => {
+        this.#logged.set(true);
+        localStorage.setItem('token', res.accessToken);
+        return res;
+      })
+    );
+  }
+
+  logout() {
+    this.#logged.set(false);
+    localStorage.removeItem('token');
+  }
+  isLogged(): Observable<boolean> {
+    const token = localStorage.getItem('token');
+    if (this.#logged() === false && token === null) {
+      return of(false);
+    } else if (this.#logged() === true) {
+      return of(true);
+    } else if (this.#logged() === false && token) {
+      this.#http.post<TokenResponse>('auth/validate', token).pipe(
+        map(() => {
+          this.#logged.set(true);
+          return of(true);
+        }),
+        catchError(() => {
+          localStorage.removeItem('token');
+          return of(false);
+        })
+      );
+    }
+    return of(false);
   }
 
   postRegister(user: User): Observable<User> {
@@ -30,14 +64,24 @@ export class AuthService {
   }
 
   postLoginGoogle(user: UserLoginGoogle): Observable<TokenResponse> {
-    return this.#http
-      .post<TokenResponse>(`${this.#authUrl}/google`, user)
-      .pipe(map((res) => res));
+    return this.#http.post<TokenResponse>(`${this.#authUrl}/google`, user).pipe(
+      map((res) => {
+        this.#logged.set(true);
+        localStorage.setItem('token', res.accessToken);
+        return res;
+      })
+    );
   }
 
   postLoginFacebook(user: UserLoginFacebook): Observable<TokenResponse> {
     return this.#http
       .post<TokenResponse>(`${this.#authUrl}/facebook`, user)
-      .pipe(map((res) => res));
+      .pipe(
+        map((res) => {
+          this.#logged.set(true);
+          localStorage.setItem('token', res.accessToken);
+          return res;
+        })
+      );
   }
 }

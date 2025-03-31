@@ -98,14 +98,23 @@
   @if(imageBase64) {
   <img [src]="imageBase64" alt="" id="imgPreview" class="img-thumbnail mb-3" />
   }
+  <div class="mb-3">
+    <ol-map [coordinates]="coordinates()">
+      <ga-autocomplete
+        class="autocomplete-container"
+        (locationChange)="changePlace($event)"
+      ></ga-autocomplete>
+      <ol-marker [coordinates]="coordinates()"></ol-marker>
+    </ol-map>
+  </div>
 
   <div>
     <button
       type="submit"
-      class="btn btn-primary"
-      [disabled]="restaurantForm.invalid"
+      class="btn btn-primary mt-5"
+      [disabled]="restaurantForm.invalid && postActivete()"
     >
-      Crear
+      {{ this.restauranResource.value() ? "Editar" : "Crear" }}
     </button>
   </div>
   <!-- {{this.newRestaurant | json}} -->

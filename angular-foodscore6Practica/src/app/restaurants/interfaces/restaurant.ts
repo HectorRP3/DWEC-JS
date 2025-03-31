@@ -1,17 +1,4 @@
-// export interface Restaurant extends RestaurantInsert {
-//   id: number;
-// }
-
-import { User } from '../../shared/interfaces/user';
-
-// export interface RestaurantInsert {
-//   name: string;
-//   image: string;
-//   cuisine: string;
-//   description: string;
-//   phone: string;
-//   daysOpen: string[];
-// }
+import { User } from '../../profile/interfaces/user';
 
 export interface RestaurantInsert {
   name: string;
@@ -29,7 +16,7 @@ export interface Restaurant extends RestaurantInsert {
   id: number;
   creator: User;
   mine: boolean;
-  distance: number;
-  commented: boolean;
+  distance?: number;
+  commented?: boolean;
   stars: number;
 }

@@ -9,7 +9,11 @@ export const restaurantResolver: ResolveFn<Restaurant> = (route) => {
   const router = inject(Router);
   return restaurantService.getRestaurant(+route.params['id']).pipe(
     catchError(() => {
-      router.navigate(['/restaurants']);
+      if (location.pathname.includes('edit')) {
+        router.navigate(['/restaurants/add']);
+      } else {
+        router.navigate(['/restaurants']);
+      }
       return EMPTY;
     })
   );

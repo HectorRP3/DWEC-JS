@@ -17,7 +17,7 @@ import {
   UserLogin,
   UserLoginFacebook,
   UserLoginGoogle,
-} from '../../shared/interfaces/user';
+} from '../../profile/interfaces/user';
 import { AuthService } from '../services/auth.service';
 import { ValidationClassesDirective } from '../../shared/directives/validation-classes.directive';
 
@@ -78,7 +78,6 @@ export class LoginComponent {
       .subscribe({
         next: (res) => {
           console.log(res.accessToken);
-          localStorage.setItem('token', res.accessToken);
           this.#router.navigate(['/restaurants']);
         },
       });

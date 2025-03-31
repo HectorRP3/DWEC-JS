@@ -4,8 +4,10 @@ import { Restaurant } from '../interfaces/restaurant';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RestaurantsService } from '../services/restaurants.service';
 import { StarRatingComponent } from '../../shared/star-rating/star-rating.component';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faPen } from '@fortawesome/free-solid-svg-icons';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { ConfirmModalComponent } from '../../shared/modals/confirm-modal/confirm-modal.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'restaurant-card',
@@ -21,12 +23,14 @@ export class RestaurantCardComponent {
   #router = inject(Router);
   restaurant = input.required<Restaurant>();
   deleted = output<void>();
-  iconTrash = faTrash;
+  icon = { faTrash, faPen };
+  #modalService = inject(NgbModal);
   getOpenDayNames(daysOpen: string[]) {
     return daysOpen.map((d) => this.days[+d]).join(', ');
   }
 
   deleteRestaurant() {
+    console.log('fdsafdsafdsafd');
     this.#restaunrantService
       .deleteRestaurant(this.restaurant().id!)
       .pipe(takeUntilDestroyed(this.#destroyRef))
@@ -34,5 +38,20 @@ export class RestaurantCardComponent {
         this.#router.navigate(['/restaurants']);
         this.deleted.emit();
       });
+  }
+
+  openDeleteModal() {
+    const modalRef = this.#modalService.open(ConfirmModalComponent);
+    modalRef.componentInstance.title = 'Eliminar restaurante';
+    modalRef.componentInstance.body =
+      '¿Estás seguro de que deseas eliminar este restaurante?';
+    modalRef.result.then((result) => {
+      if (result === true) {
+        this.deleteRestaurant();
+      }
+    });
+  }
+  goEdit() {
+    this.#router.navigate(['/restaurants', 'edit', this.restaurant().id!]);
   }
 }

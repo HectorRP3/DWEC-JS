@@ -4,7 +4,7 @@ import { isDevMode } from '@angular/core';
 export const baseUrlInterceptor: HttpInterceptorFn = (req, next) => {
   const serverUrl = isDevMode()
     ? 'https://api.fullstackpro.es/foodscore'
-    : 'o http://localhost:3000';
+    : 'https://api.fullstackpro.es/foodscore';
   const reqClone = req.clone({
     url: `${serverUrl}/${req.url}`,
   });

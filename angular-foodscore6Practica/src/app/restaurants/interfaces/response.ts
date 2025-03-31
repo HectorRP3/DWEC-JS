@@ -1,5 +1,5 @@
 import { Restaurant } from './restaurant';
-
+import { Comment } from './comments';
 export interface SingleRestaurantResponse {
   restaurant: Restaurant;
 }

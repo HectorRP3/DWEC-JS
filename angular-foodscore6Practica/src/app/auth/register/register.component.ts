@@ -18,7 +18,7 @@ import { ValidationClassesDirective } from '../../shared/directives/validation-c
 import { Coordinates } from '../../shared/interfaces/coordinates';
 import { MyGeolocation } from '../../shared/utils/my-geolocation';
 import { sameValue } from '../../shared/validators/same-value.validator';
-import { User } from '../../shared/interfaces/user';
+import { User } from '../../profile/interfaces/user';
 import { AuthService } from '../services/auth.service';
 
 @Component({
