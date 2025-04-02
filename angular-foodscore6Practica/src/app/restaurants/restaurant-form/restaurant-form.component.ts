@@ -14,10 +14,14 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { catchError, EMPTY, tap } from 'rxjs';
 import { EncodeBase64Directive } from '../../shared/directives/encode-base64.directive';
 import { ValidationClassesDirective } from '../../shared/directives/validation-classes.directive';
 import { CanComponentDeactivate } from '../../shared/guards/leave-page.guard';
+import { ConfirmModalComponent } from '../../shared/modals/confirm-modal/confirm-modal.component';
 import { GaAutocompleteDirective } from '../../shared/ol-maps/ga-autocomplete.directive';
 import { OlMapDirective } from '../../shared/ol-maps/ol-map.directive';
 import { OlMarkerDirective } from '../../shared/ol-maps/ol-marker.directive';
@@ -25,8 +29,6 @@ import { SearchResult } from '../../shared/ol-maps/search-result';
 import { oneCheckedValidator } from '../../shared/validators/oneCheckedValidator';
 import { Restaurant, RestaurantInsert } from '../interfaces/restaurant';
 import { RestaurantsService } from '../services/restaurants.service';
-import { Title } from '@angular/platform-browser';
-import { catchError, EMPTY, tap } from 'rxjs';
 
 @Component({
   selector: 'restaurant-form',
@@ -47,6 +49,8 @@ export class RestaurantFormComponent implements CanComponentDeactivate {
   #destroyRef = inject(DestroyRef);
   #router = inject(Router);
   #fb = inject(NonNullableFormBuilder);
+  #modalService = inject(NgbModal);
+
   coordinates = signal<[number, number]>([-0.5, 38.5]);
   #title = inject(Title);
   readonly days = ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'];
@@ -188,7 +192,17 @@ export class RestaurantFormComponent implements CanComponentDeactivate {
     return (
       this.saved ||
       this.restaurantForm.pristine ||
-      confirm('¿Quieres abandonar la página?. Los cambios se perderán...')
+      this.confirmModal(
+        '¿Quieres abandonar la página?.',
+        ' Los cambios se perderán...'
+      )
     );
+  }
+
+  confirmModal(title: string, body: string) {
+    const modalRef = this.#modalService.open(ConfirmModalComponent);
+    modalRef.componentInstance.title = title;
+    modalRef.componentInstance.body = body;
+    return modalRef.result.catch(() => false);
   }
 }

@@ -1,25 +1,27 @@
-import { afterNextRender, Component, DestroyRef, inject } from '@angular/core';
-import { faFacebook } from '@fortawesome/free-brands-svg-icons';
-import { FbLoginDirective } from '../facebook-login/fb-login.directive';
-import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { GoogleLoginDirective } from '../google-login/google-login.directive';
-import { Router, RouterLink } from '@angular/router';
+import { Component, DestroyRef, effect, inject } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import {
   NonNullableFormBuilder,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { MyGeolocation } from '../../shared/utils/my-geolocation';
+import { Router, RouterLink } from '@angular/router';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { faFacebook } from '@fortawesome/free-brands-svg-icons';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { from } from 'rxjs';
-import { Coordinates } from '../../shared/interfaces/coordinates';
 import {
   UserLogin,
   UserLoginFacebook,
   UserLoginGoogle,
 } from '../../profile/interfaces/user';
-import { AuthService } from '../services/auth.service';
 import { ValidationClassesDirective } from '../../shared/directives/validation-classes.directive';
+import { Coordinates } from '../../shared/interfaces/coordinates';
+import { AlertModalComponent } from '../../shared/modals/alert-modal/alert-modal.component';
+import { MyGeolocation } from '../../shared/utils/my-geolocation';
+import { FbLoginDirective } from '../facebook-login/fb-login.directive';
+import { GoogleLoginDirective } from '../google-login/google-login.directive';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'login',
@@ -39,6 +41,8 @@ export class LoginComponent {
   #destroyRef = inject(DestroyRef);
   #authService = inject(AuthService);
   #router = inject(Router);
+  #modalService = inject(NgbModal);
+
   getActualCoordinates = toSignal(
     from(MyGeolocation.getLocation().then((c) => c))
   );
@@ -51,7 +55,7 @@ export class LoginComponent {
   });
 
   constructor() {
-    afterNextRender(async () => {
+    effect(async () => {
       console.log(this.getActualCoordinates());
       const coords: Coordinates = {
         latitude: this.getActualCoordinates()?.latitude ?? 38.40418795242372,
@@ -80,6 +84,12 @@ export class LoginComponent {
           console.log(res.accessToken);
           this.#router.navigate(['/restaurants']);
         },
+        error: (err) => {
+          this.alertModal(
+            'Error',
+            'Error al iniciar sesión : ' + err.statusText
+          );
+        },
       });
   }
 
@@ -95,9 +105,14 @@ export class LoginComponent {
       .postLoginGoogle(userLoginGoogle)
       .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe({
-        next: (res) => {
-          localStorage.setItem('token', res.accessToken);
+        next: () => {
           this.#router.navigate(['/restaurants']);
+        },
+        error: (err) => {
+          this.alertModal(
+            'Error',
+            'Error al iniciar sesión : ' + err.statusText
+          );
         },
       });
   }
@@ -113,9 +128,14 @@ export class LoginComponent {
       .postLoginFacebook(UserLoginFacebook)
       .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe({
-        next: (res) => {
-          localStorage.setItem('token', res.accessToken);
+        next: () => {
           this.#router.navigate(['/restaurants']);
+        },
+        error: (err) => {
+          this.alertModal(
+            'Error',
+            'Error al iniciar sesión : ' + err.statusText
+          );
         },
       });
     console.log(resp.authResponse.accessToken);
@@ -124,5 +144,11 @@ export class LoginComponent {
 
   showError(error: string) {
     console.error(error);
+  }
+
+  alertModal(title: string, body: string) {
+    const modalRef = this.#modalService.open(AlertModalComponent);
+    modalRef.componentInstance.title = title;
+    modalRef.componentInstance.body = body;
   }
 }

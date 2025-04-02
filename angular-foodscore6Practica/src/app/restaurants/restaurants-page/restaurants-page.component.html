@@ -29,6 +29,7 @@
   @for (restaurant of restaurants(); track $index) {
   <!-- Aún no tenemos id -->
   <restaurant-card
+    @animateProduct
     [restaurant]="restaurant"
     (deleted)="deleteRestaurant(restaurant)"
     class="col"

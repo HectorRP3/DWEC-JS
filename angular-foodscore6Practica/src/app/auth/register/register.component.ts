@@ -12,13 +12,17 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { from } from 'rxjs';
+import { User } from '../../profile/interfaces/user';
 import { EncodeBase64Directive } from '../../shared/directives/encode-base64.directive';
 import { ValidationClassesDirective } from '../../shared/directives/validation-classes.directive';
+import { CanComponentDeactivate } from '../../shared/guards/leave-page.guard';
 import { Coordinates } from '../../shared/interfaces/coordinates';
+import { AlertModalComponent } from '../../shared/modals/alert-modal/alert-modal.component';
+import { ConfirmModalComponent } from '../../shared/modals/confirm-modal/confirm-modal.component';
 import { MyGeolocation } from '../../shared/utils/my-geolocation';
 import { sameValue } from '../../shared/validators/same-value.validator';
-import { User } from '../../profile/interfaces/user';
 import { AuthService } from '../services/auth.service';
 
 @Component({
@@ -33,13 +37,15 @@ import { AuthService } from '../services/auth.service';
   templateUrl: './register.component.html',
   styleUrl: './register.component.css',
 })
-export class RegisterComponent {
+export class RegisterComponent implements CanComponentDeactivate {
   #fb = inject(NonNullableFormBuilder);
   #destroyRef = inject(DestroyRef);
   #authService = inject(AuthService);
   #router = inject(Router);
   imageBase64 = '';
-  save = false;
+  saved = false;
+  #modalService = inject(NgbModal);
+
   getActualCoordinates = toSignal(
     from(MyGeolocation.getLocation().then((c) => c))
   );
@@ -77,6 +83,16 @@ export class RegisterComponent {
         this.registerForm.controls.emailConfirm.updateValueAndValidity();
       });
   }
+  canDeactivate() {
+    return (
+      this.saved ||
+      this.registerForm.pristine ||
+      this.confirmModal(
+        ' ¿Quires abandonar la página?',
+        'Los cambios se perderan..'
+      )
+    );
+  }
 
   register() {
     const newUser: User = {
@@ -91,11 +107,30 @@ export class RegisterComponent {
           console.log('Register');
           console.log({ res });
 
-          this.save = true;
+          this.saved = true;
           this.#router.navigate(['/auth/login']);
         },
-        error: () => console.log('Error al insertar'),
+        error: (err) => {
+          this.alertModal(
+            'Error',
+            'Error al registrar el usuario, por favor inténtelo de nuevo: ' +
+              err.statusText
+          );
+        },
       });
     console.log(newUser);
+  }
+
+  alertModal(title: string, body: string) {
+    const modalRef = this.#modalService.open(AlertModalComponent);
+    modalRef.componentInstance.title = title;
+    modalRef.componentInstance.body = body;
+  }
+
+  confirmModal(title: string, body: string) {
+    const modalRef = this.#modalService.open(ConfirmModalComponent);
+    modalRef.componentInstance.title = title;
+    modalRef.componentInstance.body = body;
+    return modalRef.result.catch(() => false);
   }
 }

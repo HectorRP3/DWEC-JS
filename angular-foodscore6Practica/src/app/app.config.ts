@@ -15,6 +15,7 @@ import { baseUrlInterceptor } from './shared/interceptors/base-url.interceptor';
 import { authInterceptor } from './shared/interceptors/auth.interceptor';
 import { provideGoogleId } from './auth/google-login/google-login.config';
 import { provideFacebookId } from './auth/facebook-login/facebook-login.config';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 import { env } from '../../env';
 
@@ -29,5 +30,6 @@ export const appConfig: ApplicationConfig = {
     provideGoogleId(env.googleClientId),
     provideFacebookId(env.facebookClientId, 'v15.0'),
     provideHttpClient(withInterceptors([baseUrlInterceptor, authInterceptor])),
+    provideAnimationsAsync(),
   ],
 };

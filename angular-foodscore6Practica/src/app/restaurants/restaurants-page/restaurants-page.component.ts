@@ -1,3 +1,4 @@
+import { animate, style, transition, trigger } from '@angular/animations';
 import {
   Component,
   computed,
@@ -15,15 +16,23 @@ import {
 } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { ProfileService } from '../../profile/services/profile.service';
 import { Restaurant } from '../interfaces/restaurant';
 import { RestaurantCardComponent } from '../restaurant-card/restaurant-card.component';
 import { RestaurantsService } from '../services/restaurants.service';
-import { ProfileService } from '../../profile/services/profile.service';
 @Component({
   selector: 'restaurants-page',
   imports: [FormsModule, RestaurantCardComponent],
   templateUrl: './restaurants-page.component.html',
   styleUrl: './restaurants-page.component.css',
+  animations: [
+    trigger('animateProduct', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateX(-1600px)' }),
+        animate('500ms ease-out', style({ opacity: 1, transform: 'none' })),
+      ]),
+    ]),
+  ],
 })
 export class RestaurantsPageComponent {
   #restaurantService = inject(RestaurantsService);

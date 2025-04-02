@@ -29,6 +29,7 @@
         style="width: 40px"
         src="{{ restaurantResource.value()?.creator?.avatar }}"
         alt=""
+        [routerLink]="['/profile', restaurantResource.value()?.creator?.id]"
       />
     </div>
     <div>
@@ -64,7 +65,9 @@
       <div>
         <div class="row">
           <strong
-            ><a class="name" href="">Nombre</a>:{{ comment.user?.name }}</strong
+            ><a class="name" [routerLink]="['/profile', comment.user?.id]"
+              >Nombre</a
+            >:{{ comment.user?.name }}</strong
           >
           <span class="comment">{{ comment.text }}</span>
         </div>

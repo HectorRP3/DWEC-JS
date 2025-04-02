@@ -9,6 +9,7 @@ export const restaurantsRoutes = [
         (m) => m.RestaurantsPageComponent
       ),
     title: 'Restaurantes | FoodScore',
+    data: { animation: 'restaurantsPage' },
   },
   {
     path: 'add',
@@ -29,6 +30,7 @@ export const restaurantsRoutes = [
       import('./restaurant-details/restaurant-details.component').then(
         (m) => m.RestaurantDetailsComponent
       ),
+    data: { animation: 'restaurantsDetail' },
   },
   {
     path: 'edit/:id',
@@ -42,5 +44,7 @@ export const restaurantsRoutes = [
       import('./restaurant-form/restaurant-form.component').then(
         (m) => m.RestaurantFormComponent
       ),
+
+    data: { animation: 'restaurantEdit' },
   },
 ];

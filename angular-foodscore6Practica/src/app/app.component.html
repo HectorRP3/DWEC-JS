@@ -1,4 +1,4 @@
 <menu class="m-0 p-0"></menu>
-<div class="container">
-  <router-outlet></router-outlet>
+<div class="container" [@routeAnimation]="getState(routerOutlet)">
+  <router-outlet #routerOutlet="outlet"></router-outlet>
 </div>
