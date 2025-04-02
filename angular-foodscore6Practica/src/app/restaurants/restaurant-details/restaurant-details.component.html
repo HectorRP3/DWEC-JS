@@ -54,7 +54,10 @@
     @if(commentsResource){ @for(comment of
     commentsResource.value()?.comments;track $index){
     <li class="list-group-item">
-      <a class="avatar" href="">
+      <a
+        class="avatar"
+        [routerLink]="['/profile', restaurantResource.value()?.creator?.id]"
+      >
         <img
           class="rounded-circle me-3"
           style="width: 40px"

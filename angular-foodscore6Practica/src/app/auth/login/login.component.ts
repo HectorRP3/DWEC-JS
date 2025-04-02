@@ -1,4 +1,9 @@
-import { Component, DestroyRef, effect, inject } from '@angular/core';
+import {
+  afterRenderEffect,
+  Component,
+  DestroyRef,
+  inject,
+} from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import {
   NonNullableFormBuilder,
@@ -55,7 +60,7 @@ export class LoginComponent {
   });
 
   constructor() {
-    effect(async () => {
+    afterRenderEffect(async () => {
       console.log(this.getActualCoordinates());
       const coords: Coordinates = {
         latitude: this.getActualCoordinates()?.latitude ?? 38.40418795242372,

@@ -9,6 +9,8 @@ import {
   UserLoginGoogle,
 } from '../../profile/interfaces/user';
 import { TokenResponse } from '../../restaurants/interfaces/response';
+import { SsrCookieService } from '../../shared/services/ssr-cookie.service';
+import { CookieService } from 'ngx-cookie-service';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +19,8 @@ export class AuthService {
   #authUrl = 'auth';
   #http = inject(HttpClient);
   #logged = signal(false);
-
+  cookieService = inject(CookieService);
+  #ssrCookieService = inject(SsrCookieService);
   getLogged() {
     return this.#logged();
   }
@@ -26,7 +29,8 @@ export class AuthService {
     return this.#http.post<TokenResponse>(`${this.#authUrl}/login`, user).pipe(
       map((res) => {
         this.#logged.set(true);
-        localStorage.setItem('token', res.accessToken);
+        // localStorage.setItem('token', res.accessToken);
+        this.cookieService.set('token', res.accessToken, 365, '/');
         return res;
       })
     );
@@ -37,7 +41,8 @@ export class AuthService {
     localStorage.removeItem('token');
   }
   isLogged(): Observable<boolean> {
-    const token = localStorage.getItem('token');
+    // const token = localStorage.getItem('token');
+    const token = this.#ssrCookieService.getCookie('token');
     if (this.#logged() === false && token === null) {
       return of(false);
     } else if (this.#logged() === true) {
@@ -49,7 +54,8 @@ export class AuthService {
           return of(true);
         }),
         catchError(() => {
-          localStorage.removeItem('token');
+          // localStorage.removeItem('token');
+          this.cookieService.delete('token');
           return of(false);
         })
       );
@@ -67,7 +73,8 @@ export class AuthService {
     return this.#http.post<TokenResponse>(`${this.#authUrl}/google`, user).pipe(
       map((res) => {
         this.#logged.set(true);
-        localStorage.setItem('token', res.accessToken);
+        // localStorage.setItem('token', res.accessToken);
+        this.cookieService.set('token', res.accessToken, 365, '/');
         return res;
       })
     );
@@ -79,7 +86,8 @@ export class AuthService {
       .pipe(
         map((res) => {
           this.#logged.set(true);
-          localStorage.setItem('token', res.accessToken);
+          // localStorage.setItem('token', res.accessToken);
+          this.cookieService.set('token', res.accessToken, 365, '/');
           return res;
         })
       );
