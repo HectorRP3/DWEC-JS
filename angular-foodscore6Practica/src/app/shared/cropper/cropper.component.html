@@ -1,0 +1,9 @@
+<image-cropper
+  [imageChangedEvent]="image()"
+  [maintainAspectRatio]="true"
+  [aspectRatio]="aspectRatio()"
+  [cropperMaxWidth]="anchura()"
+  format="jpeg"
+  output="base64"
+  (imageCropped)="imageCropped($event)"
+></image-cropper>

@@ -105,14 +105,19 @@
         class="form-control"
         accept="image/*"
         id="avatar"
-        encodeBase64
-        (encoded)="imageBase64 = $event"
+        (change)="useCropper($event)"
         formControlName="avatar"
         [validationClasses]="{ valid: 'is-valid', invalid: 'is-invalid' }"
       />
       <div class="invalid-feedback">Image cannot be empty</div>
     </div>
-    @if(imageBase64){
+    <cropper
+      [image]="imageSubida()"
+      [aspectRatio]="1"
+      [anchura]="200"
+      (imageUrl)="imageBase64 = $event"
+    ></cropper>
+    <!-- @if(imageBase64){
     <img
       [src]="imageBase64"
       alt=""
@@ -120,7 +125,7 @@
       class="img-thumbnail mb-3"
     />
 
-    }
+    } -->
     <p class="text-danger" id="errorInfo"></p>
     <a class="btn btn-secondary" [routerLink]="['/auth/login']" role="button"
       >Volver</a

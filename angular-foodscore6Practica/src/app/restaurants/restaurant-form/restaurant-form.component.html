@@ -88,16 +88,22 @@
       class="form-control"
       accept="image/*"
       id="image"
-      encodeBase64
-      (encoded)="imageBase64 = $event"
+      (change)="useCropper($event)"
       formControlName="image"
       [validationClasses]="{ valid: 'is-valid', invalid: 'is-invalid' }"
     />
     <div class="invalid-feedback">Image cannot be empty</div>
   </div>
-  @if(imageBase64) {
+  <cropper
+    [image]="imageSubida()"
+    [aspectRatio]="16 / 10"
+    [anchura]="1024"
+    (imageUrl)="imageBase64 = $event"
+  ></cropper>
+
+  <!-- @if(imageBase64) {
   <img [src]="imageBase64" alt="" id="imgPreview" class="img-thumbnail mb-3" />
-  }
+  } -->
   <div class="mb-3">
     <ol-map [coordinates]="coordinates()">
       <ga-autocomplete

@@ -18,7 +18,7 @@ import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { catchError, EMPTY, tap } from 'rxjs';
-import { EncodeBase64Directive } from '../../shared/directives/encode-base64.directive';
+import { CropperComponent } from '../../shared/cropper/cropper.component';
 import { ValidationClassesDirective } from '../../shared/directives/validation-classes.directive';
 import { CanComponentDeactivate } from '../../shared/guards/leave-page.guard';
 import { ConfirmModalComponent } from '../../shared/modals/confirm-modal/confirm-modal.component';
@@ -34,12 +34,12 @@ import { RestaurantsService } from '../services/restaurants.service';
   selector: 'restaurant-form',
   imports: [
     FormsModule,
-    EncodeBase64Directive,
     ReactiveFormsModule,
     ValidationClassesDirective,
     OlMapDirective,
     OlMarkerDirective,
     GaAutocompleteDirective,
+    CropperComponent,
   ],
   templateUrl: './restaurant-form.component.html',
   styleUrl: './restaurant-form.component.css',
@@ -204,5 +204,10 @@ export class RestaurantFormComponent implements CanComponentDeactivate {
     modalRef.componentInstance.title = title;
     modalRef.componentInstance.body = body;
     return modalRef.result.catch(() => false);
+  }
+  imageSubida = signal<Event | null>(null);
+
+  useCropper(event: Event) {
+    this.imageSubida.set(event);
   }
 }

@@ -3,6 +3,7 @@ import {
   Component,
   DestroyRef,
   inject,
+  signal,
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import {
@@ -15,7 +16,7 @@ import { Router, RouterLink } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { from } from 'rxjs';
 import { User } from '../../profile/interfaces/user';
-import { EncodeBase64Directive } from '../../shared/directives/encode-base64.directive';
+import { CropperComponent } from '../../shared/cropper/cropper.component';
 import { ValidationClassesDirective } from '../../shared/directives/validation-classes.directive';
 import { CanComponentDeactivate } from '../../shared/guards/leave-page.guard';
 import { Coordinates } from '../../shared/interfaces/coordinates';
@@ -32,7 +33,7 @@ import { AuthService } from '../services/auth.service';
     FormsModule,
     ReactiveFormsModule,
     ValidationClassesDirective,
-    EncodeBase64Directive,
+    CropperComponent,
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css',
@@ -132,5 +133,11 @@ export class RegisterComponent implements CanComponentDeactivate {
     modalRef.componentInstance.title = title;
     modalRef.componentInstance.body = body;
     return modalRef.result.catch(() => false);
+  }
+
+  imageSubida = signal<Event | null>(null);
+
+  useCropper(event: Event) {
+    this.imageSubida.set(event);
   }
 }

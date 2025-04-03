@@ -19,6 +19,7 @@ import { ProfileService } from '../services/profile.service';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { sameValue } from '../../shared/validators/same-value.validator';
 import { ValidationClassesDirective } from '../../shared/directives/validation-classes.directive';
+import { CropperComponent } from '../../shared/cropper/cropper.component';
 
 @Component({
   selector: 'profile-page',
@@ -30,6 +31,7 @@ import { ValidationClassesDirective } from '../../shared/directives/validation-c
     EncodeBase64Directive,
     ValidationClassesDirective,
     ReactiveFormsModule,
+    CropperComponent,
   ],
   templateUrl: './profile-page.component.html',
   styleUrl: './profile-page.component.css',
@@ -177,5 +179,11 @@ export class ProfilePageComponent {
     this.editPassword.update((e) => !e);
     console.log(this.editPassword());
     this.passwordForm.reset();
+  }
+
+  imageSubida = signal<Event | null>(null);
+
+  useCropper(event: Event) {
+    this.imageSubida.set(event);
   }
 }
