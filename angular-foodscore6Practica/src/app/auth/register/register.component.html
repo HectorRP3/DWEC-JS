@@ -111,12 +111,15 @@
       />
       <div class="invalid-feedback">Image cannot be empty</div>
     </div>
+    @defer{
     <cropper
       [image]="imageSubida()"
       [aspectRatio]="1"
       [anchura]="200"
       (imageUrl)="imageBase64 = $event"
     ></cropper>
+    }
+
     <!-- @if(imageBase64){
     <img
       [src]="imageBase64"

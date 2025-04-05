@@ -1,5 +1,6 @@
 import { Component, DestroyRef, inject, input, signal } from '@angular/core';
 import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { Router, RouterModule } from '@angular/router';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
@@ -7,19 +8,17 @@ import { faEdit } from '@fortawesome/free-regular-svg-icons';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { catchError, EMPTY, tap } from 'rxjs';
 import { EncodeBase64Directive } from '../../shared/directives/encode-base64.directive';
+import { ValidationClassesDirective } from '../../shared/directives/validation-classes.directive';
 import { AlertModalComponent } from '../../shared/modals/alert-modal/alert-modal.component';
 import { OlMapDirective } from '../../shared/ol-maps/ol-map.directive';
 import { OlMarkerDirective } from '../../shared/ol-maps/ol-marker.directive';
+import { sameValue } from '../../shared/validators/same-value.validator';
 import {
   UserPasswordEdit,
   UserPhotoEdit,
   UserProfileEdit,
 } from '../interfaces/user';
 import { ProfileService } from '../services/profile.service';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { sameValue } from '../../shared/validators/same-value.validator';
-import { ValidationClassesDirective } from '../../shared/directives/validation-classes.directive';
-import { CropperComponent } from '../../shared/cropper/cropper.component';
 
 @Component({
   selector: 'profile-page',
@@ -31,7 +30,6 @@ import { CropperComponent } from '../../shared/cropper/cropper.component';
     EncodeBase64Directive,
     ValidationClassesDirective,
     ReactiveFormsModule,
-    CropperComponent,
   ],
   templateUrl: './profile-page.component.html',
   styleUrl: './profile-page.component.css',

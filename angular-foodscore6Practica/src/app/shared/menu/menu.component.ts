@@ -13,7 +13,7 @@ export class MenuComponent {
   #authService = inject(AuthService);
   #router = inject(Router);
 
-  mostraMenu = computed(() => this.#authService.getLogged());
+  mostraMenu = computed(() => this.#authService.getLogged()());
 
   logout() {
     this.#authService.logout();

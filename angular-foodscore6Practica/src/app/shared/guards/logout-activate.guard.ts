@@ -9,6 +9,7 @@ export const logoutActivateGuard: CanActivateFn = () => {
 
   return auth.isLogged().pipe(
     map((r) => {
+      console.log('is loggged cabron', r);
       if (r) {
         return router.createUrlTree(['/restaurants']);
       } else {

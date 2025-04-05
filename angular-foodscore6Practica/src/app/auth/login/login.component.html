@@ -37,6 +37,7 @@
     <a class="btn btn-secondary" [routerLink]="['/auth/register']" role="button"
       >Crear cuenta</a
     >
+    @defer {
     <google-login class="btn" (login)="loggedGoogle($event)"></google-login>
     <button
       fbLogin
@@ -48,6 +49,7 @@
       <fa-icon [icon]="iconFacebook"></fa-icon>
       Login con Facebook
     </button>
+    }
     <button
       type="submit"
       class="btn btn-primary"

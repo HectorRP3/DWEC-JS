@@ -9,12 +9,14 @@ import {
   group,
   animate,
 } from '@angular/animations';
+import { SsrCookieService } from './shared/services/ssr-cookie.service';
 
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, MenuComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
+  providers: [SsrCookieService],
   animations: [
     trigger('routeAnimation', [
       transition('restaurantsPage => restaurantsDetail', [

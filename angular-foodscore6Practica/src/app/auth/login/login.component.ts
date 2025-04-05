@@ -82,11 +82,10 @@ export class LoginComponent {
       lng: this.loginForm.controls.lng.value,
     };
     this.#authService
-      .postLogin(userLogin)
+      .login(userLogin)
       .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe({
-        next: (res) => {
-          console.log(res.accessToken);
+        next: () => {
           this.#router.navigate(['/restaurants']);
         },
         error: (err) => {
