@@ -35,7 +35,10 @@
     </div>
     <div>
       <small class="text-muted stars">
-        <star-rating [rating]="restaurant().stars"></star-rating>
+        <star-rating
+          [modificar]="false"
+          [rating]="restaurant().stars"
+        ></star-rating>
       </small>
     </div>
     @if(restaurant().mine){

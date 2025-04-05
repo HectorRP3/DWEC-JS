@@ -1,22 +1,20 @@
+import {
+  animate,
+  group,
+  query,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { MenuComponent } from './shared/menu/menu.component';
-import {
-  trigger,
-  transition,
-  query,
-  style,
-  group,
-  animate,
-} from '@angular/animations';
-import { SsrCookieService } from './shared/services/ssr-cookie.service';
 
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, MenuComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
-  providers: [SsrCookieService],
   animations: [
     trigger('routeAnimation', [
       transition('restaurantsPage => restaurantsDetail', [

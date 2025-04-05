@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../auth/services/auth.service';
 
@@ -13,7 +13,7 @@ export class MenuComponent {
   #authService = inject(AuthService);
   #router = inject(Router);
 
-  mostraMenu = computed(() => this.#authService.getLogged()());
+  mostraMenu = this.#authService.getLogged();
 
   logout() {
     this.#authService.logout();

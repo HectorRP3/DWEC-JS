@@ -75,7 +75,10 @@
           <span class="comment">{{ comment.text }}</span>
         </div>
         <div class="stars">
-          <star-rating [rating]="comment.stars"></star-rating>
+          <star-rating
+            [modificar]="false"
+            [rating]="comment.stars"
+          ></star-rating>
         </div>
         <div>
           <small class="date">{{ comment.date | date : "medium" }}</small>
@@ -110,6 +113,7 @@
   </div>
   <div id="stars">
     <star-rating
+      [modificar]="true"
       [rating]="commentForm.controls.stars.value!"
       (ratingChange)="changeRating($event)"
     ></star-rating>

@@ -1,13 +1,13 @@
 import { Component, DestroyRef, inject, input, output } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
-import { Restaurant } from '../interfaces/restaurant';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { RestaurantsService } from '../services/restaurants.service';
-import { StarRatingComponent } from '../../shared/star-rating/star-rating.component';
-import { faTrash, faPen } from '@fortawesome/free-solid-svg-icons';
+import { Router, RouterLink } from '@angular/router';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { ConfirmModalComponent } from '../../shared/modals/confirm-modal/confirm-modal.component';
+import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ConfirmModalComponent } from '../../shared/modals/confirm-modal/confirm-modal.component';
+import { StarRatingComponent } from '../../shared/star-rating/star-rating.component';
+import { Restaurant } from '../interfaces/restaurant';
+import { RestaurantsService } from '../services/restaurants.service';
 
 @Component({
   selector: 'restaurant-card',
@@ -19,6 +19,7 @@ export class RestaurantCardComponent {
   #restaunrantService = inject(RestaurantsService);
   #destroyRef = inject(DestroyRef);
   weekDay: number = new Date().getDay();
+  creator = input<string>();
   readonly days = ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'];
   #router = inject(Router);
   restaurant = input.required<Restaurant>();
@@ -35,7 +36,15 @@ export class RestaurantCardComponent {
       .deleteRestaurant(this.restaurant().id!)
       .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe(() => {
-        this.#router.navigate(['/restaurants']);
+        if (this.creator()) {
+          this.#router.navigate(['/restaurants'], {
+            queryParams: { creator: this.creator() },
+          });
+          console.log('creator', this.creator());
+        } else {
+          console.log('creator', this.creator());
+          this.#router.navigate(['/restaurants']);
+        }
         this.deleted.emit();
       });
   }
