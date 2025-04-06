@@ -40,6 +40,7 @@
     @defer {
     <google-login class="btn" (login)="loggedGoogle($event)"></google-login>
     <button
+      type="button"
       fbLogin
       [scopes]="['email', 'public_profile']"
       class="btn btn-primary ms-3"

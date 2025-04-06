@@ -53,7 +53,7 @@ export class LoginComponent {
   );
 
   loginForm = this.#fb.group({
-    email: ['', Validators.required],
+    email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required],
     lat: [0, Validators.required],
     lng: [0, Validators.required],
@@ -91,7 +91,7 @@ export class LoginComponent {
         error: (err) => {
           this.alertModal(
             'Error',
-            'Error al iniciar sesión : ' + err.statusText
+            'Error al iniciar sesión : ' + err.error.message
           );
         },
       });
@@ -115,7 +115,7 @@ export class LoginComponent {
         error: (err) => {
           this.alertModal(
             'Error',
-            'Error al iniciar sesión : ' + err.statusText
+            'Error al iniciar sesión : ' + err.error.message
           );
         },
       });
@@ -138,7 +138,7 @@ export class LoginComponent {
         error: (err) => {
           this.alertModal(
             'Error',
-            'Error al iniciar sesión : ' + err.statusText
+            'Error al iniciar sesión : ' + err.error.message
           );
         },
       });
