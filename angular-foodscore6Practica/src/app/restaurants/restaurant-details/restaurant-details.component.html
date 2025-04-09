@@ -9,11 +9,11 @@
     class="col"
   ></restaurant-card>
 </div>
+
 <div class="card mt-4">
   <div class="card-header bg-success text-white" id="address">
     {{ restaurantResource.value()?.address }}
   </div>
-  <!-- <div id="map"></div> -->
   <ol-map [coordinates]="coordinates()">
     <ol-marker [coordinates]="coordinates()"></ol-marker>
   </ol-map>
@@ -50,7 +50,6 @@
 <div class="card mt-4 mb-4">
   <div class="card-header bg-secondary text-white">Restaurant comments</div>
   <ul class="list-group" id="comments">
-    <!-- Comments go here. See the template at the bottom of this page -->
     @if(commentsResource){ @for(comment of
     commentsResource.value()?.comments;track $index){
     <li class="list-group-item">
@@ -127,7 +126,7 @@
   </button>
 </form>
 }@else{
-<div class="text-center">Ya has comentado este restaurante</div>
+<div class="text-center fs-1">Ya has comentado este restaurante</div>
 } }
 <div class="mt-4">
   <a class="btn btn-success" [routerLink]="['/restaurants']">

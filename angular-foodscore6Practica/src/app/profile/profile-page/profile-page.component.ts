@@ -101,10 +101,11 @@ export class ProfilePageComponent {
           );
           this.imagen.set(image);
         },
-        error: (e) => {
+        error: (err) => {
           this.openAlertModa(
             'Error al cambiar la imagen',
-            'Error en la subida de la imagen porfavor intentalo más tarde' + e
+            'Error en la subida de la imagen porfavor intentalo más tarde' +
+              err.error.message
           );
         },
       });
@@ -126,10 +127,10 @@ export class ProfilePageComponent {
           this.passwordForm.reset();
           this.changeVisibilityPassword();
         },
-        error: (e) => {
+        error: (err) => {
           this.openAlertModa(
             'Contraseña no ha sido cambiada',
-            'La contraseña no se ha podido cambiase ' + e
+            'La contraseña no se ha podido cambiase ' + err.error.message
           );
         },
       });
@@ -153,10 +154,10 @@ export class ProfilePageComponent {
           this.changeVisitbilityProfile();
           this.profileResource.reload();
         },
-        error: (e) => {
+        error: (err) => {
           this.openAlertModa(
             'El perfil no se ha cambiado',
-            'El perfil no se ha podido cambiar: ' + e
+            'El perfil no se ha podido cambiar: ' + err.error.message
           );
         },
       });

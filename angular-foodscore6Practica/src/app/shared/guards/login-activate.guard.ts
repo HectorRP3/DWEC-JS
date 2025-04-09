@@ -9,8 +9,6 @@ export const loginActivateGuard: CanActivateFn = () => {
 
   return auth.isLogged().pipe(
     map((r) => {
-      console.log('isfdasfdasfd loggged cabron', r);
-
       if (!r) {
         return router.createUrlTree(['/auth/login']);
       } else {

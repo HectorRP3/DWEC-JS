@@ -23,9 +23,6 @@ export const restaurantsRoutes = [
   {
     path: ':id',
     canActivate: [numericIdGuard],
-    // resolve: {
-    //   restaurant: restaurantResolver,
-    // },
     loadComponent: () =>
       import('./restaurant-details/restaurant-details.component').then(
         (m) => m.RestaurantDetailsComponent
@@ -36,9 +33,6 @@ export const restaurantsRoutes = [
     path: 'edit/:id',
     canActivate: [numericIdGuard],
     canDeactivate: [leavePageGuard],
-    // resolve: {
-    //   restaurant: restaurantResolver,
-    // },
     title: 'Editar Restaurante | FoodScore',
     loadComponent: () =>
       import('./restaurant-form/restaurant-form.component').then(

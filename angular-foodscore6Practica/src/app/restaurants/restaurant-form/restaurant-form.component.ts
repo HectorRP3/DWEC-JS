@@ -67,7 +67,7 @@ export class RestaurantFormComponent implements CanComponentDeactivate {
       this.#restaurantService.getRestaurant(id).pipe(
         tap((r) => {
           this.coordinates.set([r.lng, r.lat]);
-          this.#title.setTitle(r.name + ' | FoodScore');
+          this.#title.setTitle(r.name + ' | ºoodScore');
         }),
         catchError(() => {
           this.#router.navigate(['/restaurants']);
